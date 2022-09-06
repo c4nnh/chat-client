@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import styled from "styled-components";
 import tw from "twin.macro";
 
@@ -7,6 +8,6 @@ function App() {
 
 export default App;
 
-const StyledDiv = styled.div`
+const StyledDiv = styled(Button)`
   ${tw`text-blue-500`}
 `;
