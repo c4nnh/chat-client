@@ -7,7 +7,7 @@ import { Message } from './Message'
 export const PrivatePages: React.FC = () => {
   const { user } = useAuthStore()
 
-  // if (!user) return <Navigate to={END_POINTS.AUTH.MASTER} replace />
+  if (!user) return <Navigate to={END_POINTS.AUTH.MASTER} replace />
 
   return (
     <PrivateLayout>
