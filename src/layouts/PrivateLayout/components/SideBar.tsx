@@ -48,7 +48,7 @@ const Body = styled.div`
 `
 
 const Footer = styled.div`
-  ${tw`h-10 bg-red-200 flex justify-center items-center`}
+  ${tw`h-10 bg-red-200 flex justify-center items-center cursor-pointer`}
 
   .is-open {
     transform: rotate(0);

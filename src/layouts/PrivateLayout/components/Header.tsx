@@ -7,7 +7,10 @@ type Props = {}
 export const Header: React.FC<Props> = () => {
   return (
     <Container>
-      <MessageOutlined className="text-2xl text-red-500" />
+      <div className="flex items-center gap-2">
+        <MessageOutlined className="text-2xl text-red-500 flex justify-center" />
+        <span className="text-2xl font-bold">Chat with your friends</span>
+      </div>
     </Container>
   )
 }
