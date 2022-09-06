@@ -1,9 +1,5 @@
 import { useMediaQuery } from 'react-responsive'
-
-const SCREEN_WIDTH = {
-  mobile: 450,
-  desktop: 1000,
-}
+import { SCREEN_WIDTH } from '../constants'
 
 export const useScreen = () => {
   const isMobileScreen = useMediaQuery({ maxWidth: SCREEN_WIDTH.mobile })
