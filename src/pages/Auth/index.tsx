@@ -1,5 +1,5 @@
 import { Navigate, Routes, Route } from 'react-router-dom'
-import { END_POINTS } from '../../constants/endpoints'
+import { END_POINTS } from '../../constants'
 import { useAuthStore } from '../../stores'
 import { Login } from './Login'
 import { Register } from './Register'

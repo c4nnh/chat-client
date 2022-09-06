@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { END_POINTS } from './constants/endpoints'
+import { END_POINTS } from './constants'
 import { AuthPages, PrivatePages } from './pages'
 
 export const App: React.FC = () => {
