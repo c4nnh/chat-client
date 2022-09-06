@@ -1,13 +1,7 @@
-import { Button } from "antd";
-import styled from "styled-components";
-import tw from "twin.macro";
+import { PrivatePages } from "./pages";
 
-function App() {
-  return <StyledDiv>React</StyledDiv>;
-}
+export const App: React.FC = () => {
+  // if (1) return <Navigate to={END_POINTS.AUTH.MASTER} replace />;
 
-export default App;
-
-const StyledDiv = styled(Button)`
-  ${tw`text-blue-500`}
-`;
+  return <PrivatePages />;
+};
