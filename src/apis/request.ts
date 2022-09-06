@@ -1,4 +1,6 @@
-import axios from 'axios'
+import { notification } from 'antd'
+import axios, { AxiosError } from 'axios'
+import { ErrorResponse } from '../models'
 import { getToken } from '../utils'
 
 const BASE_URL = process.env.REACT_APP_API_URL
@@ -21,7 +23,13 @@ request.interceptors.request.use(
     }
     return config
   },
-  error => Promise.reject(error)
+  (error: AxiosError<ErrorResponse>) => {
+    notification.error({
+      message: error.response?.data.error,
+      description: error.response?.data.message,
+    })
+    return Promise.reject(error.response?.data)
+  }
 )
 
 request.interceptors.response.use(
@@ -36,7 +44,13 @@ const authRequest = axios.create({
 
 authRequest.interceptors.response.use(
   response => response.data,
-  error => Promise.reject(error.response.data)
+  (error: AxiosError<ErrorResponse>) => {
+    notification.error({
+      message: error.response?.data.error,
+      description: error.response?.data.message,
+    })
+    return Promise.reject(error.response?.data)
+  }
 )
 
 export { request, authRequest }

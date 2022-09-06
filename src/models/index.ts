@@ -1,3 +1,10 @@
+// Common
+export type ErrorResponse = {
+  error: string
+  message: string
+  statusCode: number
+}
+
 // Auth
 export type Token = {
   accessToken: string

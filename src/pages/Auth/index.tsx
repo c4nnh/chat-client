@@ -9,7 +9,7 @@ export const AuthPages: React.FC = () => {
   const { user } = useAuthStore()
 
   if (user) {
-    return <Navigate to={END_POINTS.PRIVATE.MASTER} replace />
+    return <Navigate to={`/${END_POINTS.PRIVATE.MASTER}`} replace />
   }
 
   return (
@@ -18,7 +18,7 @@ export const AuthPages: React.FC = () => {
         <Route path={END_POINTS.AUTH.LOGIN} element={<Login />} />
         <Route path={END_POINTS.AUTH.REGISTER} element={<Register />} />
         <Route
-          path="*"
+          path=""
           element={<Navigate to={END_POINTS.AUTH.LOGIN} replace />}
         />
       </Routes>

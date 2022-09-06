@@ -3,11 +3,12 @@ import {
   UseMutationOptions,
   UseQueryOptions,
 } from '@tanstack/react-query'
+import { ErrorResponse } from '../models'
 
 export type QueryOptions<
   TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
-  TError = unknown,
+  TError = ErrorResponse,
   TData = TQueryFnData
 > = Omit<
   UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
@@ -17,7 +18,7 @@ export type QueryOptions<
 export type MutationOptions<
   TData = unknown,
   TVariables = void,
-  TError = unknown,
+  TError = ErrorResponse,
   TContext = unknown
 > = Omit<
   UseMutationOptions<TData, TError, TVariables, TContext>,
