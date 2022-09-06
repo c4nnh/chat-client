@@ -12,7 +12,11 @@ export const SideBar: React.FC<Props> = () => {
   const collapseSidebar = () => setIsOpen(!isOpen)
 
   return (
-    <Container>
+    <Container
+      className={classnames({
+        'is-open': isOpen,
+      })}
+    >
       <Header>Header</Header>
       <Body>Body</Body>
       <Footer onClick={collapseSidebar}>
@@ -28,10 +32,16 @@ export const SideBar: React.FC<Props> = () => {
 
 const Container = styled.div`
   ${tw`flex flex-col border-r-[1px] border-gray-200 w-80`}
+
+  :not(.is-open) {
+    ${tw`w-20`}
+    transition: 1s;
+  }
+  transition: 1s;
 `
 
 const Header = styled.div`
-  ${tw`bg-red-200`}
+  ${tw`h-10 bg-red-200`}
 `
 const Body = styled.div`
   ${tw`flex-1`}
@@ -42,11 +52,11 @@ const Footer = styled.div`
 
   .is-open {
     transform: rotate(0);
-    transition: 1.5s;
+    transition: 1s;
   }
 
   span {
     transform: rotate(180deg);
-    transition: 1.5s;
+    transition: 1s;
   }
 `
