@@ -33,8 +33,8 @@ export const Login: React.FC = () => {
           onFinish={handleLogin}
         >
           <FormInput
-            name="usernameOrEmail"
-            label="Username or email"
+            name="email"
+            label="Email"
             inputProps={{ required: true }}
           />
           <FormPassword

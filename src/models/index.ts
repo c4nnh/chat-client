@@ -30,6 +30,11 @@ export type RegisterPayload = {
 export type RegisterResponse = LoginResponse
 
 // Model
+export type Theme = {
+  color: string
+  bgColor: string
+}
+
 export type User = {
   id: string
   name: string
@@ -38,4 +43,5 @@ export type User = {
   image?: string
   createdAt: Date
   updatedAt: Date
+  theme: Theme
 }

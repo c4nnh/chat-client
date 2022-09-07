@@ -3,13 +3,10 @@ import styled from 'styled-components'
 import tw from 'twin.macro'
 import classnames from 'classnames'
 import { StepBackwardOutlined } from '@ant-design/icons'
-import { useAuthStore } from '../../../stores'
 
 type Props = {}
 
 export const SideBar: React.FC<Props> = () => {
-  const { user } = useAuthStore()
-
   const [isOpen, setIsOpen] = useState(true)
 
   const collapseSidebar = () => setIsOpen(!isOpen)
@@ -20,7 +17,7 @@ export const SideBar: React.FC<Props> = () => {
         'is-open': isOpen,
       })}
     >
-      <Header>{user?.name}</Header>
+      <Header>Header</Header>
       <Body>Body</Body>
       <Footer onClick={collapseSidebar}>
         <StepBackwardOutlined
@@ -38,9 +35,9 @@ const Container = styled.div`
 
   :not(.is-open) {
     ${tw`w-20`}
-    transition: 1s;
+    transition: 0.5s;
   }
-  transition: 1s;
+  transition: 0.5s;
 `
 
 const Header = styled.div`
@@ -55,11 +52,11 @@ const Footer = styled.div`
 
   .is-open {
     transform: rotate(0);
-    transition: 1s;
+    transition: 0.5s;
   }
 
   span {
     transform: rotate(180deg);
-    transition: 1s;
+    transition: 0.5s;
   }
 `
