@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
-import { SideBar } from './components'
+import { Sidebar } from './components'
 import { Header } from './components/Header'
 
 type Props = PropsWithChildren
@@ -11,7 +11,7 @@ export const PrivateLayout: React.FC<Props> = ({ children }) => {
     <Container>
       <Header />
       <Body>
-        <SideBar />
+        <Sidebar />
         {children}
       </Body>
     </Container>

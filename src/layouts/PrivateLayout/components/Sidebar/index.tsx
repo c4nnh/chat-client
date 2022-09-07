@@ -2,12 +2,18 @@ import { useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import classnames from 'classnames'
-import { EditFilled, StepBackwardOutlined } from '@ant-design/icons'
-import { ThemeProps } from '../../../models'
+import {
+  EditFilled,
+  SearchOutlined,
+  StepBackwardOutlined,
+} from '@ant-design/icons'
+import { ThemeProps } from '../../../../models'
+import { Messengers } from './Messengers'
+import { Input } from 'antd'
 
 type Props = {}
 
-export const SideBar: React.FC<Props> = () => {
+export const Sidebar: React.FC<Props> = () => {
   const [isOpen, setIsOpen] = useState(true)
 
   const collapseSidebar = () => setIsOpen(!isOpen)
@@ -31,7 +37,13 @@ export const SideBar: React.FC<Props> = () => {
         )}
         <EditFilled className="text-lg cursor-pointer" />
       </Header>
-      <Body>Body</Body>
+      <Body>
+        <StyledInput
+          suffix={<SearchOutlined className="text-[#b6b6b6]" />}
+          placeholder="Search"
+        />
+        <Messengers />
+      </Body>
       <Footer onClick={collapseSidebar}>
         <StepBackwardOutlined
           className={classnames({
@@ -63,7 +75,20 @@ const Header = styled.div`
   }
 `
 const Body = styled.div`
-  ${tw`flex-1`}
+  ${tw`flex-1 flex flex-col p-2`}
+`
+
+const StyledInput = styled(Input)`
+  ${tw`rounded-lg`};
+  border: 1px solid ${(p: ThemeProps) => p.theme.color};
+
+  input::placeholder {
+    color: ${(p: ThemeProps) => p.theme.color};
+  }
+
+  .ant-input-suffix > span {
+    color: ${(p: ThemeProps) => p.theme.color};
+  }
 `
 
 const Footer = styled.div`
