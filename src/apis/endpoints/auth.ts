@@ -1,16 +1,27 @@
-import { MutationFunction, useMutation } from '@tanstack/react-query'
+import {
+  MutationFunction,
+  QueryFunction,
+  useMutation,
+  useQuery,
+} from '@tanstack/react-query'
 import {
   LoginPayload,
   LoginResponse,
   RegisterPayload,
   RegisterResponse,
+  User,
 } from '../../models'
-import { authRequest } from '../request'
-import { MutationOptions } from '../type'
+import { authRequest, request } from '../request'
+import { MutationOptions, QueryOptions } from '../type'
 
 type Response = {
   login: LoginResponse
   register: RegisterResponse
+  me: User
+}
+
+type QueryKeys = {
+  me: ['me']
 }
 
 type Variables = {
@@ -21,6 +32,7 @@ type Variables = {
 type API = {
   login: MutationFunction<Response['login'], Variables['login']>
   register: MutationFunction<Response['register'], Variables['register']>
+  me: QueryFunction<Response['me'], QueryKeys['me']>
 }
 
 const PREFIX = 'auth'
@@ -28,7 +40,12 @@ const PREFIX = 'auth'
 const auth: API = {
   login: data => authRequest.post(`${PREFIX}/login`, data),
   register: data => authRequest.post(`${PREFIX}/register`, data),
+  me: () => request.get('me'),
 }
+
+export const useMeQuery = (
+  options?: QueryOptions<Response['me'], QueryKeys['me']>
+) => useQuery(['me'], auth.me, options)
 
 export const useLoginMutation = (
   options?: MutationOptions<Response['login'], Variables['login']>

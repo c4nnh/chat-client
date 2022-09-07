@@ -14,7 +14,7 @@ export const Login: React.FC = () => {
   const { login } = useAuthStore()
   const { handleSubmit } = formMethods
 
-  const { mutate } = useLoginMutation({
+  const { mutate, isLoading } = useLoginMutation({
     onSuccess: login,
   })
 
@@ -35,12 +35,12 @@ export const Login: React.FC = () => {
           <FormInput
             name="email"
             label="Email"
-            inputProps={{ required: true }}
+            inputProps={{ required: true, readOnly: isLoading }}
           />
           <FormPassword
             name="password"
             label="Password"
-            inputProps={{ required: true }}
+            inputProps={{ required: true, readOnly: isLoading }}
           />
           <span
             className="text-blue-500 cursor-pointer text-center underline"
@@ -50,7 +50,7 @@ export const Login: React.FC = () => {
           >
             Doesn't have account?
           </span>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={isLoading}>
             Login
           </Button>
         </Form>

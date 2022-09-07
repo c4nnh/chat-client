@@ -24,3 +24,7 @@ code {
 .ant-notification-notice-description {
   white-space: pre-line;
 }
+
+.anticon {
+  display: flex;
+}

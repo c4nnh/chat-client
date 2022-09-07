@@ -5,13 +5,9 @@ import { clearToken, setToken } from '../utils'
 
 type AuthState = {
   user?: User
+  me: (user: User) => void
   login: (response: LoginResponse) => void
   logout: () => void
-}
-
-const theme1 = {
-  color: '#fca5a5',
-  bgColor: '#e5e7eb',
 }
 
 const theme2 = {
@@ -36,6 +32,9 @@ export const useAuthStore = create<AuthState>()(
         user: undefined,
       })
       clearToken()
+    },
+    me: user => {
+      set({ user })
     },
   }))
 )

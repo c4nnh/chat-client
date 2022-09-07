@@ -5,6 +5,13 @@ export type ErrorResponse = {
   statusCode: number
 }
 
+export type ThemeProps = {
+  theme: {
+    color: string
+    bgColor: string
+  }
+}
+
 // Auth
 export type Token = {
   accessToken: string
