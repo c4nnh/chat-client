@@ -3,6 +3,9 @@
   "editor.formatOnSave": true,
   "editor.fontSize": 12,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  },
   // twin.macro
   "scss.validate": false,
   "editor.quickSuggestions": {

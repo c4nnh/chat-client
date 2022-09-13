@@ -3,10 +3,10 @@ import tw from 'twin.macro'
 
 type Props = {}
 
-export const Message: React.FC<Props> = () => {
-  return <Container>Message</Container>
+export const Setting: React.FC<Props> = () => {
+  return <Container>Setting</Container>
 }
 
 const Container = styled.div`
-  ${tw`bg-red-200 flex-1`}
+  ${tw`bg-gray-500 flex-1`}
 `

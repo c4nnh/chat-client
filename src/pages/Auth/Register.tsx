@@ -6,6 +6,7 @@ import { FormInput, FormPassword } from '../../components'
 import { END_POINTS } from '../../constants'
 import { RegisterPayload } from '../../models'
 import { useAuthStore } from '../../stores'
+import { requiredFieldRule } from '../../utils'
 
 export const Register: React.FC = () => {
   const navigate = useNavigate()
@@ -34,17 +35,20 @@ export const Register: React.FC = () => {
           <FormInput
             name="email"
             label="Email"
-            inputProps={{ required: true, readOnly: isLoading }}
+            inputProps={{ readOnly: isLoading }}
+            rules={requiredFieldRule}
           />
           <FormInput
             name="name"
             label="Name"
-            inputProps={{ required: true, readOnly: isLoading }}
+            inputProps={{ readOnly: isLoading }}
+            rules={requiredFieldRule}
           />
           <FormPassword
             name="password"
             label="Password"
-            inputProps={{ required: true, readOnly: isLoading }}
+            inputProps={{ readOnly: isLoading }}
+            rules={requiredFieldRule}
           />
           <span
             className="text-blue-500 cursor-pointer text-center underline"

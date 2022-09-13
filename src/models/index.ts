@@ -52,3 +52,9 @@ export type User = {
   updatedAt: Date
   theme: Theme
 }
+
+export type Conversation = {
+  id: string
+  title: string
+  image?: string
+}

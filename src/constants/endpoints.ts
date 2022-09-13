@@ -7,5 +7,7 @@ export const END_POINTS = {
   PRIVATE: {
     MASTER: '',
     MESSAGE: 'messages',
+    PROFILE: 'profile',
+    SETTING: 'setting',
   },
 }
