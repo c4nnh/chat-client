@@ -53,8 +53,17 @@ export type User = {
   theme: Theme
 }
 
+export type Message = {
+  id: string
+  content: string
+  sender: Pick<User, 'id' | 'name'>
+  createdAt: Date
+  readBy: Pick<User, 'id' | 'image'>[]
+}
+
 export type Conversation = {
   id: string
   title: string
   image?: string
+  lastMessage: Message
 }

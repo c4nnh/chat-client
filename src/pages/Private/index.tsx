@@ -14,7 +14,7 @@ export const PrivatePages: React.FC = () => {
   return (
     <PrivateLayout>
       <Routes>
-        <Route path={END_POINTS.PRIVATE.MESSAGE} element={<Message />} />
+        <Route path={`${END_POINTS.PRIVATE.MESSAGE}/*`} element={<Message />} />
         <Route path={END_POINTS.PRIVATE.PROFILE} element={<Profile />} />
         <Route path={END_POINTS.PRIVATE.SETTING} element={<Setting />} />
         <Route

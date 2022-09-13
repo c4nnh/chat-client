@@ -73,7 +73,11 @@ const StyledMenu = styled.div`
 `
 
 const StyledMenuItem = styled.div`
-  ${tw`px-2 py-4 text-white text-xl w-full flex justify-center`}
+  ${tw`px-2 py-4 text-white text-xl w-full flex justify-center`};
+  transition: background-color 0.5s;
+  :hover {
+    ${tw`bg-gray-800`}
+  }
 
   &.selected {
     ${tw`bg-gray-800`}
