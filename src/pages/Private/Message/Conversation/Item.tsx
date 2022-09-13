@@ -36,7 +36,7 @@ export const Item: React.FC<Props> = ({ conversation }) => {
             className={classnames({
               'text-gray-400': true,
               'font-semibold': true,
-              unread: !isRead,
+              unread: !isRead && !isYourMessage,
             })}
           >
             {conversation.title}
@@ -45,7 +45,7 @@ export const Item: React.FC<Props> = ({ conversation }) => {
             className={classnames({
               'text-gray-500': true,
               'font-light': true,
-              unread: !isRead,
+              unread: !isRead && !isYourMessage,
             })}
             style={{ width: 200 }}
             ellipsis
