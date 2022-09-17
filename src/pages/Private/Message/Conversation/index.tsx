@@ -58,7 +58,7 @@ const List = styled.div`
   }
 
   ::-webkit-scrollbar-track {
-    ${tw`bg-gray-700`}
+    ${tw`bg-gray-800`}
   }
 
   ::-webkit-scrollbar-thumb {

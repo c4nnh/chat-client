@@ -1,22 +1,19 @@
-import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
+import { Chat } from './Chat'
+import { Setting } from './Setting'
 
 type Props = {}
 
 export const Channel: React.FC<Props> = () => {
-  const location = useLocation()
-
-  const conversationId = location.pathname.split('/').pop()
-
-  useEffect(() => {
-    console.log('Change conversation')
-  }, [conversationId])
-
-  return <Container>{conversationId}</Container>
+  return (
+    <Container>
+      <Chat />
+      <Setting />
+    </Container>
+  )
 }
 
 const Container = styled.div`
-  ${tw`flex-1 bg-gray-200`}
+  ${tw`flex-1 flex bg-gray-700`}
 `

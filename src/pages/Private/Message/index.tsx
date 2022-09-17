@@ -1,6 +1,8 @@
+import { Route, Routes } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { Channel } from './Channel'
+import { ChannelWelcome } from './Channel/Welcome'
 import { Conversation } from './Conversation'
 
 type Props = {}
@@ -9,7 +11,10 @@ export const Message: React.FC<Props> = () => {
   return (
     <Container>
       <Conversation />
-      <Channel />
+      <Routes>
+        <Route path="" element={<ChannelWelcome />} />
+        <Route path=":id" element={<Channel />} />
+      </Routes>
     </Container>
   )
 }
