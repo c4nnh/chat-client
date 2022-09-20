@@ -16,25 +16,28 @@ const theme2 = {
 }
 
 export const useAuthStore = create<AuthState>()(
-  persist(set => ({
-    login: response => {
-      const { user, token } = response
-      set({
-        user: {
-          ...user,
-          theme: theme2,
-        },
-      })
-      setToken(token)
-    },
-    logout: () => {
-      set({
-        user: undefined,
-      })
-      clearToken()
-    },
-    me: user => {
-      set({ user })
-    },
-  }))
+  persist(
+    set => ({
+      login: response => {
+        const { user, token } = response
+        set({
+          user: {
+            ...user,
+            theme: theme2,
+          },
+        })
+        setToken(token)
+      },
+      logout: () => {
+        set({
+          user: undefined,
+        })
+        clearToken()
+      },
+      me: user => {
+        set({ user })
+      },
+    }),
+    { name: 'authStore' }
+  )
 )
