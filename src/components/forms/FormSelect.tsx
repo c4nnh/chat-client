@@ -1,5 +1,9 @@
 import { FormItemProps, Select, SelectProps } from 'antd'
+import { DefaultOptionType } from 'antd/lib/select'
+import { BaseOptionType, SelectHandler } from 'rc-select/lib/Select'
 import { ControllerProps } from 'react-hook-form'
+import styled from 'styled-components'
+import tw from 'twin.macro'
 import { ControlledFormItem } from './ControlledFormItem'
 
 export type SelectOption = {
@@ -42,9 +46,11 @@ export const FormSelect: React.FC<Props> = ({
     <ControlledFormItem
       {...rest}
       render={({ value, onChange, onBlur }) => (
-        <Select
-          {...{ value, onChange, onBlur }}
-          {...selectProps}
+        <StyledSelect
+          {...(selectProps as DefaultOptionType)}
+          value={value}
+          onChange={onChange}
+          onBlur={onBlur}
           onPopupScroll={handleScroll}
         >
           {options
@@ -57,8 +63,15 @@ export const FormSelect: React.FC<Props> = ({
                 {item.label}
               </Select.Option>
             ))}
-        </Select>
+        </StyledSelect>
       )}
     />
   )
 }
+
+const StyledSelect = styled(Select).attrs({})`
+  .ant-select-selection-item-remove {
+    display: flex;
+    align-items: center;
+  }
+`

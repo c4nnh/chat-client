@@ -80,6 +80,7 @@ export const Add: React.FC<Props> = ({ open, onClose }) => {
               maxTagCount: 5,
               allowClear: true,
               showSearch: true,
+              mode: 'multiple',
               onSearch: value => setEmail(value),
             }}
           />
