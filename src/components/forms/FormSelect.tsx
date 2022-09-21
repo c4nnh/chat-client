@@ -13,18 +13,40 @@ type Props = {
   label?: string
   formItemProps?: FormItemProps
   selectProps?: SelectProps
+  infiniteScroll?: {
+    hasNextPage?: boolean
+    isFetchingNextPage: boolean
+    fetchNextPage: () => void
+  }
 } & Omit<ControllerProps, 'render'>
 
 export const FormSelect: React.FC<Props> = ({
   selectProps,
   options,
+  infiniteScroll,
   ...rest
 }) => {
+  const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    if (infiniteScroll && infiniteScroll.hasNextPage) {
+      const { hasNextPage, fetchNextPage } = infiniteScroll
+      const target = e.target as HTMLDivElement
+      const { scrollTop, offsetHeight, scrollHeight } = target
+      const bottom = Math.ceil(scrollTop + offsetHeight) === scrollHeight
+      if (bottom && hasNextPage) {
+        fetchNextPage()
+      }
+    }
+  }
+
   return (
     <ControlledFormItem
       {...rest}
       render={({ value, onChange, onBlur }) => (
-        <Select {...{ value, onChange, onBlur }} {...selectProps}>
+        <Select
+          {...{ value, onChange, onBlur }}
+          {...selectProps}
+          onPopupScroll={handleScroll}
+        >
           {options
             .filter(
               (item, index, self) =>

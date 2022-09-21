@@ -1,4 +1,3 @@
-import { CheckCircleFilled } from '@ant-design/icons'
 import { Avatar, Typography } from 'antd'
 import classnames from 'classnames'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -16,9 +15,10 @@ export const Item: React.FC<Props> = ({ conversation }) => {
   const location = useLocation()
   const { user } = useAuthStore()
 
-  const isYourMessage = conversation.lastMessage.sender.id === user?.id
+  const isYourMessage = conversation.lastMessage.creator.id === user?.id
 
-  const isRead = conversation.lastMessage.readBy.length > 0
+  // const isRead = conversation.lastMessage.readBy.length > 0
+  const isRead = true
 
   const isSelected = location.pathname.split('/').pop() === conversation.id
 
@@ -39,22 +39,22 @@ export const Item: React.FC<Props> = ({ conversation }) => {
               unread: !isRead && !isYourMessage,
             })}
           >
-            {conversation.title}
+            {conversation.name}
           </span>
           <Typography.Text
             className={classnames({
-              'text-gray-500': true,
+              'text-gray-400': true,
               'font-light': true,
               unread: !isRead && !isYourMessage,
             })}
             style={{ width: 200 }}
             ellipsis
           >
-            {conversation.lastMessage.sender.id === user?.id ? `You: ` : ''}
+            {conversation.lastMessage.creator.id === user?.id ? `You: ` : ''}
             {conversation.lastMessage.content}
           </Typography.Text>
         </Title>
-        {isYourMessage ? (
+        {/* {isYourMessage ? (
           <CheckCircleFilled className="text-gray-500" />
         ) : isRead ? (
           <Avatar.Group>
@@ -64,7 +64,7 @@ export const Item: React.FC<Props> = ({ conversation }) => {
           </Avatar.Group>
         ) : (
           <span className="h-2 w-2 rounded-full bg-white"></span>
-        )}
+        )} */}
       </div>
     </Container>
   )

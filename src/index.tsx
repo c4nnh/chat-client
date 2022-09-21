@@ -9,7 +9,16 @@ import { notification } from 'antd'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      staleTime: 5000,
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 
 notification.config({
   duration: 3,

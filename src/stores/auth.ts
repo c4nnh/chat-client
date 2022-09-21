@@ -33,6 +33,7 @@ export const useAuthStore = create<AuthState>()(
           user: undefined,
         })
         clearToken()
+        localStorage.removeItem('authStore')
       },
       me: user => {
         set({ user })

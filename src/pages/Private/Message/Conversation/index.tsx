@@ -1,44 +1,44 @@
+import { Skeleton } from 'antd'
 import { useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
-import { useAuthStore } from '../../../../stores'
+import { useGetConversationsInfiniteQuery } from '../../../../apis'
+import { PAGINATION_LIMIT } from '../../../../constants'
 import { Header } from './Header'
 import { Item } from './Item'
 
 type Props = {}
 
 export const Conversation: React.FC<Props> = () => {
-  const [searchText, setSearchText] = useState<string>()
+  const [name, setName] = useState<string>()
 
-  const { user } = useAuthStore()
+  const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
+    useGetConversationsInfiniteQuery({
+      name,
+      limit: PAGINATION_LIMIT,
+    })
+
+  const onScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    const target = e.target as HTMLDivElement
+    const { scrollTop, offsetHeight, scrollHeight } = target
+    const bottom = Math.ceil(scrollTop + offsetHeight) === scrollHeight
+    if (bottom && hasNextPage) {
+      fetchNextPage()
+    }
+  }
 
   return (
     <Container>
-      <Header onSearch={setSearchText} />
-      <List>
-        {Array.from(Array(50).keys()).map((_, index) => (
-          <Item
-            key={index}
-            conversation={{
-              id: `${index}`,
-              image: 'https://joeschmoe.io/api/v1/random',
-              title: 'abcd',
-              lastMessage: {
-                id: 'lastMessage',
-                content: 'Hello world hahahahahahahahhahahahahahahahahah',
-                sender: {
-                  id: index % 2 === 0 ? user?.id || '' : 'sender',
-                  name: 'sender',
-                },
-                createdAt: new Date(),
-                readBy: Array.from(Array(index % 3).keys()).map((_, idx) => ({
-                  id: `${idx}`,
-                  image: 'https://joeschmoe.io/api/v1/random',
-                })),
-              },
-            }}
-          />
-        ))}
+      <Header onSearch={setName} />
+      <List onScroll={onScroll}>
+        {isFetching &&
+          Array.from(Array(10).keys()).map(item => (
+            <StyledSkeletonButton key={item} />
+          ))}
+        {data?.pages.map(group =>
+          group.data.map(item => <Item key={item.id} conversation={item} />)
+        )}
+        {isFetchingNextPage && <StyledSkeletonButton />}
       </List>
     </Container>
   )
@@ -67,5 +67,13 @@ const List = styled.div`
 
   ::-webkit-scrollbar-thumb:hover {
     ${tw`bg-gray-400`}
+  }
+`
+
+const StyledSkeletonButton = styled(Skeleton.Button).attrs({
+  active: true,
+})`
+  .ant-skeleton-button {
+    ${tw`w-full h-16 rounded-lg`}
   }
 `

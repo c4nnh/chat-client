@@ -20,7 +20,7 @@ export const Sidebar: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const { user } = useAuthStore()
+  const { user, logout } = useAuthStore()
 
   const menuItems: MenuItem[] = [
     {
@@ -32,7 +32,7 @@ export const Sidebar: React.FC = () => {
       path: END_POINTS.PRIVATE.PROFILE,
     },
     {
-      icon: <SettingOutlined />,
+      icon: <SettingOutlined onClick={logout} />,
       path: END_POINTS.PRIVATE.SETTING,
     },
   ]

@@ -1,14 +1,18 @@
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
+import { SearchOutlined } from '@ant-design/icons'
 import { Input } from 'antd'
-import { ChangeEvent } from 'react'
+import { ChangeEvent, useState } from 'react'
 import styled from 'styled-components'
 import tw, { theme } from 'twin.macro'
+import { AddMessageIcon } from '../../../../assets'
+import { Add } from './Add'
 
 type Props = {
   onSearch: (searchText: string) => void
 }
 
 export const Header: React.FC<Props> = ({ onSearch }) => {
+  const [isAdding, setIsAdding] = useState(false)
+
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     onSearch(e.target.value)
   }
@@ -21,7 +25,11 @@ export const Header: React.FC<Props> = ({ onSearch }) => {
         allowClear
         onChange={handleSearch}
       />
-      <PlusOutlined className="text-gray-500 cursor-pointer" />
+      <AddMessageIcon
+        className="text-gray-400 cursor-pointer"
+        onClick={() => setIsAdding(true)}
+      />
+      <Add open={isAdding} onClose={() => setIsAdding(false)} />
     </Container>
   )
 }
@@ -37,10 +45,10 @@ const StyledInput = styled(Input)`
   border: none;
 
   .ant-input {
-    ${tw`bg-gray-700 text-gray-300`}
+    ${tw`bg-gray-700 text-gray-400`}
 
     ::placeholder {
-      ${tw`text-gray-300`}
+      ${tw`text-gray-400`}
     }
   }
 
@@ -49,6 +57,6 @@ const StyledInput = styled(Input)`
   }
 
   .ant-input-clear-icon {
-    ${tw`text-gray-300`}
+    ${tw`text-gray-400`}
   }
 `
