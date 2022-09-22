@@ -34,7 +34,7 @@ export const useGetContactsInfiniteQuery = (
     getNextPageParam: (prevPage, pages) => {
       if (pages.length < prevPage.pagination.totalPage) {
         return {
-          offset: pages.length * PAGINATION_LIMIT,
+          offset: pages.length * (params.limit || PAGINATION_LIMIT),
         }
       }
       return undefined

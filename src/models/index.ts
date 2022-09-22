@@ -76,9 +76,18 @@ export type ContactParams = PaginationParams & {
 export type Message = {
   id: string
   content: string
-  creator: Pick<User, 'id' | 'name'>
+  creator: Pick<User, 'id' | 'name' | 'image'>
   createdAt: Date
-  readBy: Pick<User, 'id' | 'image'>[]
+  // readBy: Pick<User, 'id' | 'image'>[]
+}
+
+export type MessagesParams = PaginationParams & {
+  conversationId: string
+}
+
+export type MessageGroup = {
+  creator: Pick<User, 'id' | 'name' | 'image'>
+  messages: Message[]
 }
 
 export type Conversation = {
@@ -90,4 +99,9 @@ export type Conversation = {
 
 export type ConversationParams = PaginationParams & {
   name?: string
+}
+
+export type CreateConversationDto = {
+  userIds: string[]
+  content: string
 }

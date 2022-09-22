@@ -1,19 +1,35 @@
-import { QueryFunction, useInfiniteQuery } from '@tanstack/react-query'
+import {
+  MutationFunction,
+  QueryFunction,
+  useInfiniteQuery,
+  useMutation,
+} from '@tanstack/react-query'
 import { PAGINATION_LIMIT } from '../../constants'
-import { Collection, Conversation, ConversationParams } from '../../models'
+import {
+  Collection,
+  Conversation,
+  ConversationParams,
+  CreateConversationDto,
+} from '../../models'
 import { request } from '../request'
-import { InfiniteQueryOptions } from '../type'
+import { InfiniteQueryOptions, MutationOptions } from '../type'
 
 type Response = {
   get: Collection<Conversation>
+  create: Conversation
 }
 
 type QueryKeys = {
   get: ['getConversations', ConversationParams]
 }
 
+type Variables = {
+  create: CreateConversationDto
+}
+
 type API = {
   get: QueryFunction<Response['get'], QueryKeys['get']>
+  create: MutationFunction<Response['create'], Variables['create']>
 }
 
 const PREFIX = 'conversations'
@@ -21,6 +37,7 @@ const PREFIX = 'conversations'
 const conversation: API = {
   get: ({ queryKey: [, params], pageParam }) =>
     request.get(PREFIX, { params: { ...params, pageParam } }),
+  create: data => request.post(PREFIX, data),
 }
 
 export const useGetConversationsInfiniteQuery = (
@@ -31,10 +48,14 @@ export const useGetConversationsInfiniteQuery = (
     getNextPageParam: (prevPage, pages) => {
       if (pages.length < prevPage.pagination.totalPage) {
         return {
-          offset: pages.length * PAGINATION_LIMIT,
+          offset: pages.length * (params.limit || PAGINATION_LIMIT),
         }
       }
       return undefined
     },
     ...options,
   })
+
+export const useCreateConversationMutation = (
+  options?: MutationOptions<Response['create'], Variables['create']>
+) => useMutation(['create'], conversation.create, options)

@@ -3,7 +3,6 @@ import { useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { useGetConversationsInfiniteQuery } from '../../../../apis'
-import { PAGINATION_LIMIT } from '../../../../constants'
 import { Header } from './Header'
 import { Item } from './Item'
 
@@ -15,7 +14,6 @@ export const Conversation: React.FC<Props> = () => {
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     useGetConversationsInfiniteQuery({
       name,
-      limit: PAGINATION_LIMIT,
     })
 
   const onScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
@@ -53,12 +51,8 @@ const List = styled.div`
   height: calc(100vh - 65px);
   overflow-x: hidden;
 
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-
   ::-webkit-scrollbar-track {
-    ${tw`bg-gray-800`}
+    ${tw`bg-gray-800 rounded-full`}
   }
 
   ::-webkit-scrollbar-thumb {

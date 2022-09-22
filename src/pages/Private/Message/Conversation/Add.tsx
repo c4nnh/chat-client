@@ -1,6 +1,9 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { Form, Modal } from 'antd'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { useCreateConversationMutation } from '../../../../apis'
 import { useGetContactsInfiniteQuery } from '../../../../apis/endpoints/user'
 import { FormInput, FormSelect } from '../../../../components'
 
@@ -15,10 +18,16 @@ type CreateConversationPayload = {
 }
 
 export const Add: React.FC<Props> = ({ open, onClose }) => {
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+
   const formMethods = useForm<CreateConversationPayload>()
   const [email, setEmail] = useState<string>()
 
-  const { handleSubmit } = formMethods
+  const { handleSubmit, reset } = formMethods
+
+  const { mutate, isLoading: isSendingMessage } =
+    useCreateConversationMutation()
 
   const {
     data: contacts,
@@ -40,7 +49,14 @@ export const Add: React.FC<Props> = ({ open, onClose }) => {
   }
 
   const onSend = handleSubmit(data => {
-    console.log(data)
+    mutate(data, {
+      onSuccess: res => {
+        queryClient.invalidateQueries(['getConversations'])
+        navigate(res.id)
+        reset()
+        onClose()
+      },
+    })
   })
 
   return (
@@ -52,7 +68,7 @@ export const Add: React.FC<Props> = ({ open, onClose }) => {
       maskClosable={false}
       destroyOnClose
       okText="Send"
-      //   confirmLoading={true}
+      confirmLoading={isSendingMessage}
       onOk={onSend}
     >
       <FormProvider {...formMethods}>

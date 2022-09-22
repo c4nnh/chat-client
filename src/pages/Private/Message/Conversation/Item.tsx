@@ -15,7 +15,7 @@ export const Item: React.FC<Props> = ({ conversation }) => {
   const location = useLocation()
   const { user } = useAuthStore()
 
-  const isYourMessage = conversation.lastMessage.creator.id === user?.id
+  const isYourMessage = conversation.lastMessage?.creator?.id === user?.id
 
   // const isRead = conversation.lastMessage.readBy.length > 0
   const isRead = true
@@ -50,8 +50,8 @@ export const Item: React.FC<Props> = ({ conversation }) => {
             style={{ width: 200 }}
             ellipsis
           >
-            {conversation.lastMessage.creator.id === user?.id ? `You: ` : ''}
-            {conversation.lastMessage.content}
+            {conversation.lastMessage?.creator?.id === user?.id ? `You: ` : ''}
+            {conversation.lastMessage?.content}
           </Typography.Text>
         </Title>
         {/* {isYourMessage ? (
