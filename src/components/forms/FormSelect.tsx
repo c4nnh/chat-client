@@ -1,9 +1,7 @@
 import { FormItemProps, Select, SelectProps } from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
-import { BaseOptionType, SelectHandler } from 'rc-select/lib/Select'
 import { ControllerProps } from 'react-hook-form'
 import styled from 'styled-components'
-import tw from 'twin.macro'
 import { ControlledFormItem } from './ControlledFormItem'
 
 export type SelectOption = {

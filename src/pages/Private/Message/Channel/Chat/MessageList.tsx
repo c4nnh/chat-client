@@ -1,11 +1,16 @@
 import { Skeleton } from 'antd'
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { useGetMessagesInfiniteQuery } from '../../../../../apis'
 import { StyledSpin } from '../../../../../components/Spin'
+import { SocketContext } from '../../../../../contexts'
 import { MessageGroup as MessageGroupModel } from '../../../../../models'
+import {
+  addMessageToMessageGroups,
+  convertMessagesToMessageGroups,
+} from '../../../../../utils'
 import { MessageGroup } from './MessageGroup'
 import { MessageInput } from './MessageInput'
 
@@ -13,14 +18,16 @@ type Props = {}
 
 export const MessageList: React.FC<Props> = () => {
   const { id: conversationId } = useParams()
-  const [messageGroups, setMessageGroups] = useState<MessageGroupModel[]>()
+  const [messageGroups, setMessageGroups] = useState<MessageGroupModel[]>([])
   const bottomRef = useRef<null | HTMLDivElement>(null)
   const [isFetchMore, setIsFetchMore] = useState(false)
+  const socket = useContext(SocketContext)
+  const [numOfNewMessagesOnSocket, setNumOfNewMessagesOnSocket] = useState(0)
 
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     useGetMessagesInfiniteQuery(
       {
-        limit: 30,
+        limit: 40,
         conversationId: conversationId || '',
       },
       {
@@ -32,7 +39,7 @@ export const MessageList: React.FC<Props> = () => {
                 messageGroups?.reduce(
                   (pre, curr) => pre + curr.messages.length,
                   0
-                ) || 0 * 30,
+                ) || 0 + numOfNewMessagesOnSocket,
             }
           }
           return undefined
@@ -41,37 +48,25 @@ export const MessageList: React.FC<Props> = () => {
     )
 
   useEffect(() => {
+    socket.on('connect', () => console.log('Connected'))
+
+    socket.on('onMessage', msg => {
+      setNumOfNewMessagesOnSocket(pre => pre + 1)
+      setMessageGroups(pre => addMessageToMessageGroups(msg, pre))
+    })
+
+    return () => {
+      socket.off('connect')
+      socket.off('onMessage')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
     setMessageGroups(
-      data?.pages
-        .map(group => group.data)
-        .flat()
-        .reduce((pre, curr) => {
-          if (!pre.length) {
-            return [
-              {
-                creator: curr.creator,
-                messages: [curr],
-              },
-            ]
-          }
-          const lastGroup = pre[pre.length - 1]
-          if (lastGroup.creator.id === curr.creator.id) {
-            return [
-              ...pre.slice(0, pre.length - 1),
-              {
-                ...lastGroup,
-                messages: [...lastGroup.messages, curr],
-              },
-            ]
-          }
-          return [
-            ...pre,
-            {
-              creator: curr.creator,
-              messages: [curr],
-            },
-          ]
-        }, [] as MessageGroupModel[])
+      convertMessagesToMessageGroups(
+        data?.pages.map(group => group.data).flat()
+      )
     )
   }, [data])
 
@@ -134,10 +129,6 @@ const Container = styled.div`
     ${tw`bg-gray-500`}
   }
 `
-
-type P = {
-  width: string
-}
 
 const StyledSkeletonInput = styled(Skeleton.Input).attrs({
   active: true,

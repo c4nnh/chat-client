@@ -70,7 +70,7 @@ const MessageContainer = styled.div`
 `
 
 const ListMessages = styled.div`
-  ${tw`flex flex-col`}
+  ${tw`flex flex-col-reverse`}
 `
 
 const MessageTitleContainer = styled.div`
