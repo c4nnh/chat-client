@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { useGetMessagesInfiniteQuery } from '../../../../../apis'
+import { StyledSpin } from '../../../../../components/Spin'
 import { MessageGroup as MessageGroupModel } from '../../../../../models'
 import { MessageGroup } from './MessageGroup'
 import { MessageInput } from './MessageInput'
@@ -46,22 +47,22 @@ export const MessageList: React.FC<Props> = () => {
               },
             ]
           }
-          const [firstGroup, ...rest] = pre
-          if (firstGroup.creator.id === curr.creator.id) {
+          const lastGroup = pre[pre.length - 1]
+          if (lastGroup.creator.id === curr.creator.id) {
             return [
+              ...pre.slice(0, pre.length - 1),
               {
-                ...firstGroup,
-                messages: [...firstGroup.messages, curr],
+                ...lastGroup,
+                messages: [...lastGroup.messages, curr],
               },
-              ...rest,
             ]
           }
           return [
+            ...pre,
             {
               creator: curr.creator,
               messages: [curr],
             },
-            ...pre,
           ]
         }, [] as MessageGroupModel[])
     )
@@ -75,7 +76,11 @@ export const MessageList: React.FC<Props> = () => {
   }, [isFetchMore, messageGroups])
 
   const handleScroll = (e: any) => {
-    if (!e.target.scrollTop) {
+    const { scrollTop, scrollHeight, clientHeight } = e.target
+
+    const top = scrollTop === clientHeight - scrollHeight
+
+    if (top && hasNextPage) {
       setIsFetchMore(true)
       fetchNextPage()
     }
@@ -84,9 +89,11 @@ export const MessageList: React.FC<Props> = () => {
   return (
     <>
       <Container onScroll={handleScroll}>
+        <div ref={bottomRef} />
         {messageGroups?.map((item, index) => (
           <MessageGroup messageGroup={item} key={index} />
         ))}
+        {isFetchingNextPage && <StyledSpin />}
         {isFetching &&
           Array.from(Array(6).keys()).map((_, index) =>
             Array.from(Array(5).keys()).map((item, idx) => (
@@ -97,7 +104,6 @@ export const MessageList: React.FC<Props> = () => {
               />
             ))
           )}
-        <div ref={bottomRef} />
       </Container>
       {!isFetching && <MessageInput />}
     </>
@@ -105,7 +111,7 @@ export const MessageList: React.FC<Props> = () => {
 }
 
 const Container = styled.div`
-  ${tw`gap-3 p-3 flex flex-col`};
+  ${tw`gap-3 p-3 flex flex-col-reverse`};
   height: calc(100vh - 121px);
   overflow-x: hidden;
 
