@@ -17,25 +17,32 @@ export const MessageList: React.FC<Props> = () => {
   const bottomRef = useRef<null | HTMLDivElement>(null)
   const [isFetchMore, setIsFetchMore] = useState(false)
 
-  const {
-    data: messages,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-  } = useGetMessagesInfiniteQuery(
-    {
-      limit: 30,
-      conversationId: conversationId || '',
-    },
-    {
-      enabled: !!conversationId,
-    }
-  )
+  const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
+    useGetMessagesInfiniteQuery(
+      {
+        limit: 30,
+        conversationId: conversationId || '',
+      },
+      {
+        enabled: !!conversationId,
+        getNextPageParam: (prevPage, pages) => {
+          if (pages.length < prevPage.pagination.totalPage) {
+            return {
+              offset:
+                messageGroups?.reduce(
+                  (pre, curr) => pre + curr.messages.length,
+                  0
+                ) || 0 * 30,
+            }
+          }
+          return undefined
+        },
+      }
+    )
 
   useEffect(() => {
     setMessageGroups(
-      messages?.pages
+      data?.pages
         .map(group => group.data)
         .flat()
         .reduce((pre, curr) => {
@@ -66,7 +73,7 @@ export const MessageList: React.FC<Props> = () => {
           ]
         }, [] as MessageGroupModel[])
     )
-  }, [messages])
+  }, [data])
 
   useEffect(() => {
     if (!isFetchMore) {
