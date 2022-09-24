@@ -1,9 +1,9 @@
 import { Route, Routes } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
-import { Channel } from './Channel'
-import { ChannelWelcome } from './Channel/Welcome'
-import { Conversation } from './Conversation'
+import { Channel } from './Conversation'
+import { ChannelWelcome } from './Conversation/Welcome'
+import { Conversation } from './ConversationList'
 
 type Props = {}
 

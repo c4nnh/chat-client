@@ -3,7 +3,7 @@ import { END_POINTS } from '../../constants'
 import { socket, SocketContext } from '../../contexts'
 import { PrivateLayout } from '../../layouts'
 import { useAuthStore } from '../../stores'
-import { Message } from './Message'
+import { Message } from './Messaging'
 import { Profile } from './Profile'
 import { Setting } from './Setting'
 

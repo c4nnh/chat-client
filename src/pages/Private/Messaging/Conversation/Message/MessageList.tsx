@@ -1,4 +1,5 @@
 import { Skeleton } from 'antd'
+import classnames from 'classnames'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -90,7 +91,13 @@ export const MessageList: React.FC<Props> = () => {
 
   return (
     <>
-      <Container onScroll={handleScroll}>
+      <Container
+        onScroll={handleScroll}
+        className={classnames({
+          'is-reverse':
+            (data?.pages.map(group => group.data).flat() || []).length > 35,
+        })}
+      >
         <div ref={bottomRef} />
         {messageGroups?.map((item, index) => (
           <MessageGroup messageGroup={item} key={index} />
@@ -113,9 +120,13 @@ export const MessageList: React.FC<Props> = () => {
 }
 
 const Container = styled.div`
-  ${tw`gap-3 p-3 flex flex-col-reverse`};
+  ${tw`gap-3 p-3 flex flex-col`};
   height: calc(100vh - 121px);
   overflow-x: hidden;
+
+  &.is-reverse {
+    ${tw`flex-col-reverse`}
+  }
 
   ::-webkit-scrollbar-track {
     ${tw`bg-gray-700 rounded-full`}

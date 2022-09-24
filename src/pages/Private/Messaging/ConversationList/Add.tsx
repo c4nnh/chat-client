@@ -6,22 +6,17 @@ import { useNavigate } from 'react-router-dom'
 import { useCreateConversationMutation } from '../../../../apis'
 import { useGetContactsInfiniteQuery } from '../../../../apis/endpoints/user'
 import { FormInput, FormSelect } from '../../../../components'
+import { CreateConversationDto } from '../../../../models'
 
 type Props = {
   open: boolean
   onClose: () => void
 }
-
-type CreateConversationPayload = {
-  userIds: string[]
-  content: string
-}
-
 export const Add: React.FC<Props> = ({ open, onClose }) => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  const formMethods = useForm<CreateConversationPayload>()
+  const formMethods = useForm<CreateConversationDto>()
   const [email, setEmail] = useState<string>()
 
   const { handleSubmit, reset } = formMethods

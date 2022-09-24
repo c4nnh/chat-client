@@ -1,19 +1,35 @@
-import { QueryFunction, useInfiniteQuery } from '@tanstack/react-query'
+import {
+  MutationFunction,
+  QueryFunction,
+  useInfiniteQuery,
+  useMutation,
+} from '@tanstack/react-query'
 import { PAGINATION_LIMIT } from '../../constants'
-import { Collection, Message, MessagesParams } from '../../models'
+import {
+  Collection,
+  CreateMessageDto,
+  Message,
+  MessagesParams,
+} from '../../models'
 import { request } from '../request'
-import { InfiniteQueryOptions } from '../type'
+import { InfiniteQueryOptions, MutationOptions } from '../type'
 
 type Response = {
   get: Collection<Message>
+  create: Message
 }
 
 type QueryKeys = {
   get: ['getMessages', MessagesParams]
 }
 
+type Variables = {
+  create: CreateMessageDto
+}
+
 type API = {
   get: QueryFunction<Response['get'], QueryKeys['get']>
+  create: MutationFunction<Response['create'], Variables['create']>
 }
 
 const PREFIX = 'messages'
@@ -21,6 +37,7 @@ const PREFIX = 'messages'
 const message: API = {
   get: ({ queryKey: [, params], pageParam }) =>
     request.get(PREFIX, { params: { ...params, ...pageParam } }),
+  create: data => request.post(PREFIX, data),
 }
 
 export const useGetMessagesInfiniteQuery = (
@@ -38,3 +55,7 @@ export const useGetMessagesInfiniteQuery = (
     },
     ...options,
   })
+
+export const useCreateMessageMutation = (
+  options?: MutationOptions<Response['create'], Variables['create']>
+) => useMutation(['create'], message.create, options)

@@ -81,6 +81,11 @@ export type Message = {
   // readBy: Pick<User, 'id' | 'image'>[]
 }
 
+export type CreateMessageDto = {
+  content: string
+  conversationId: string
+}
+
 export type MessagesParams = PaginationParams & {
   conversationId: string
 }

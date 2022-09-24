@@ -38,11 +38,20 @@ export const MessageGroup: React.FC<Props> = ({ messageGroup }) => {
             </span>
           </MessageTitleContainer>
         )}
-        <ListMessages>
+        <ListMessages
+          className={classnames({
+            'is-your': isYourMessage,
+          })}
+        >
           {messageGroup.messages.map(item => (
-            <span className="text-gray-300" key={item.id}>
+            <MessageContent
+              className={classnames({
+                'is-your': isYourMessage,
+              })}
+              key={item.id}
+            >
               {item.content}
-            </span>
+            </MessageContent>
           ))}
         </ListMessages>
       </MessageContainer>
@@ -70,9 +79,44 @@ const MessageContainer = styled.div`
 `
 
 const ListMessages = styled.div`
-  ${tw`flex flex-col-reverse`}
+  ${tw`flex flex-col-reverse gap-1`};
+
+  &.is-your {
+    ${tw`items-end`}
+
+    span:last-child {
+      ${tw`rounded-tr-3xl`}
+    }
+
+    span:first-child {
+      ${tw`rounded-br-3xl`}
+    }
+  }
+
+  :not(&.is-your) {
+    span:last-child {
+      ${tw`rounded-tl-3xl`}
+    }
+
+    span:first-child {
+      ${tw`rounded-bl-3xl`}
+    }
+  }
 `
 
 const MessageTitleContainer = styled.div`
   ${tw`flex gap-2 items-center`}
+`
+
+const MessageContent = styled.span`
+  width: fit-content;
+  ${tw`text-gray-300 flex bg-gray-600 px-[10px] py-[2px] rounded`}
+
+  &.is-your {
+    ${tw`rounded-l-3xl`}
+  }
+
+  :not(&.is-your) {
+    ${tw`rounded-r-3xl`}
+  }
 `
