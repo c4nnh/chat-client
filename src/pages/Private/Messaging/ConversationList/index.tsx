@@ -72,8 +72,6 @@ export const Conversation: React.FC<Props> = () => {
     })
 
     socket.on('onMessage', (message: Message) => {
-      console.log(message)
-
       updateConversations({
         ...message.conversation,
         lastMessage: message,

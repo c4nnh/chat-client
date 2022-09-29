@@ -43,7 +43,9 @@ export const addMessageToMessageGroups = (
     return [
       {
         ...firstGroup,
-        messages: [message, ...firstGroup.messages],
+        messages: [message, ...firstGroup.messages].filter(
+          (item, index, self) => index === self.findIndex(i => i.id === item.id)
+        ),
       },
       ...rest,
     ]
