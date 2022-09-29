@@ -77,6 +77,7 @@ export type Message = {
   id: string
   content: string
   creator: Pick<User, 'id' | 'name' | 'image'>
+  conversation: Pick<Conversation, 'id' | 'name' | 'image'>
   createdAt: Date
   // readBy: Pick<User, 'id' | 'image'>[]
 }

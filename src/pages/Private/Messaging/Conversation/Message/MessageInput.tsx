@@ -39,7 +39,7 @@ export const MessageInput: React.FC<Props> = () => {
         }}
       />
       {!!content ? (
-        <StyledSendIcon />
+        <StyledSendIcon onClick={() => onSend()} />
       ) : (
         <StyledLikeIcon onClick={() => onSend('👍')} />
       )}

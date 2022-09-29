@@ -1,8 +1,10 @@
 import { Skeleton } from 'antd'
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { useGetConversationsInfiniteQuery } from '../../../../apis'
+import { SocketContext } from '../../../../contexts'
+import { Conversation as ConversationModel, Message } from '../../../../models'
 import { Header } from './Header'
 import { Item } from './Item'
 
@@ -10,11 +12,27 @@ type Props = {}
 
 export const Conversation: React.FC<Props> = () => {
   const [name, setName] = useState<string>()
+  const [conversations, setConversations] = useState<ConversationModel[]>([])
+  const socket = useContext(SocketContext)
+  const [numOfNewConversationsOnSocket, setNumOfNewConversationsOnSocket] =
+    useState(0)
 
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
-    useGetConversationsInfiniteQuery({
-      name,
-    })
+    useGetConversationsInfiniteQuery(
+      {
+        name,
+      },
+      {
+        getNextPageParam: (prevPage, pages) => {
+          if (pages.length < prevPage.pagination.totalPage) {
+            return {
+              offset: conversations.length + numOfNewConversationsOnSocket,
+            }
+          }
+          return undefined
+        },
+      }
+    )
 
   const onScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
     const target = e.target as HTMLDivElement
@@ -25,6 +43,47 @@ export const Conversation: React.FC<Props> = () => {
     }
   }
 
+  useEffect(() => {
+    setConversations((data?.pages || []).map(item => item.data).flat())
+  }, [data])
+
+  const updateConversations = (conversation: ConversationModel) => {
+    setConversations(pre => {
+      const index = pre.findIndex(item => item.id === conversation.id)
+      if (index < 0) {
+        setNumOfNewConversationsOnSocket(pre => pre + 1)
+        return [conversation, ...pre]
+      } else {
+        return [
+          ...pre.slice(0, index),
+          {
+            ...pre[index],
+            ...conversation,
+          },
+          ...pre.slice(index + 1, pre.length),
+        ]
+      }
+    })
+  }
+
+  useEffect(() => {
+    socket.on('onConversation', (conversation: ConversationModel) => {
+      updateConversations(conversation)
+    })
+
+    socket.on('onMessage', (message: Message) => {
+      updateConversations({
+        ...message.conversation,
+        lastMessage: message,
+      })
+    })
+
+    return () => {
+      socket.off('onConversation')
+      socket.off('onMessage')
+    }
+  }, [socket])
+
   return (
     <Container>
       <Header onSearch={setName} />
@@ -33,9 +92,9 @@ export const Conversation: React.FC<Props> = () => {
           Array.from(Array(10).keys()).map(item => (
             <StyledSkeletonButton key={item} />
           ))}
-        {data?.pages.map(group =>
-          group.data.map(item => <Item key={item.id} conversation={item} />)
-        )}
+        {conversations.map(item => (
+          <Item key={item.id} conversation={item} />
+        ))}
         {isFetchingNextPage && <StyledSkeletonButton />}
       </List>
     </Container>

@@ -110,6 +110,8 @@ const MessageTitleContainer = styled.div`
 
 const MessageContent = styled.span`
   width: fit-content;
+  max-width: 400px;
+  word-break: break-all;
   ${tw`text-gray-300 flex bg-gray-600 px-[10px] py-[2px] rounded`}
 
   &.is-your {

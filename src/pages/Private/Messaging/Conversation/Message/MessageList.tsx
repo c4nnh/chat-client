@@ -1,5 +1,4 @@
 import { Skeleton } from 'antd'
-import classnames from 'classnames'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -49,7 +48,7 @@ export const MessageList: React.FC<Props> = () => {
     )
 
   useEffect(() => {
-    socket.on('connect', () => console.log('Connected'))
+    socket.on('connect', () => {})
 
     socket.on('onMessage', msg => {
       setNumOfNewMessagesOnSocket(pre => pre + 1)
@@ -60,8 +59,7 @@ export const MessageList: React.FC<Props> = () => {
       socket.off('connect')
       socket.off('onMessage')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [socket])
 
   useEffect(() => {
     setMessageGroups(
@@ -74,9 +72,9 @@ export const MessageList: React.FC<Props> = () => {
   useEffect(() => {
     if (!isFetchMore) {
       bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-      setIsFetchMore(false)
     }
-  }, [isFetchMore, messageGroups])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messageGroups])
 
   const handleScroll = (e: any) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target
@@ -86,19 +84,15 @@ export const MessageList: React.FC<Props> = () => {
     if (top && hasNextPage) {
       setIsFetchMore(true)
       fetchNextPage()
+    } else {
+      setIsFetchMore(false)
     }
   }
 
   return (
     <>
-      <Container
-        onScroll={handleScroll}
-        className={classnames({
-          'is-reverse':
-            (data?.pages.map(group => group.data).flat() || []).length > 35,
-        })}
-      >
-        <div ref={bottomRef} />
+      <Container onScroll={handleScroll}>
+        <div ref={bottomRef} className="flex-1" />
         {messageGroups?.map((item, index) => (
           <MessageGroup messageGroup={item} key={index} />
         ))}
@@ -120,13 +114,9 @@ export const MessageList: React.FC<Props> = () => {
 }
 
 const Container = styled.div`
-  ${tw`gap-3 p-3 flex flex-col`};
+  ${tw`pt-3 px-3 flex flex-col-reverse`};
   height: calc(100vh - 121px);
   overflow-x: hidden;
-
-  &.is-reverse {
-    ${tw`flex-col-reverse`}
-  }
 
   ::-webkit-scrollbar-track {
     ${tw`bg-gray-700 rounded-full`}
