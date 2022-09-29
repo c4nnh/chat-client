@@ -1,11 +1,13 @@
 import { LikeFilled } from '@ant-design/icons'
 import { Input } from 'antd'
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import tw, { theme } from 'twin.macro'
 import { useCreateMessageMutation } from '../../../../../apis'
 import { SendIcon } from '../../../../../assets'
+import { SocketContext } from '../../../../../contexts'
+import { useAuthStore } from '../../../../../stores'
 
 type Props = {}
 
@@ -13,6 +15,13 @@ export const MessageInput: React.FC<Props> = () => {
   const [content, setContent] = useState('')
   const { id: conversationId } = useParams()
   const { mutate } = useCreateMessageMutation()
+  const { user } = useAuthStore()
+  const socket = useContext(SocketContext)
+  const [focused, setFocused] = useState(false)
+
+  const onFocus = () => setFocused(true)
+
+  const onBlur = () => setFocused(false)
 
   const onSend = (value?: string) => {
     mutate(
@@ -26,6 +35,21 @@ export const MessageInput: React.FC<Props> = () => {
     )
   }
 
+  useEffect(() => {
+    if (focused && !!content) {
+      socket.emit('onTypingStart', {
+        conversationId,
+        user: { id: user?.id, name: user?.name },
+      })
+    } else {
+      socket.emit('onTypingStop', {
+        conversationId,
+        userId: user?.id,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focused, content])
+
   return (
     <Container>
       <StyledInput
@@ -37,6 +61,8 @@ export const MessageInput: React.FC<Props> = () => {
             onSend()
           }
         }}
+        onFocus={onFocus}
+        onBlur={onBlur}
       />
       {!!content ? (
         <StyledSendIcon onClick={() => onSend()} />

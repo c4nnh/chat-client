@@ -1,4 +1,5 @@
 import { Skeleton } from 'antd'
+import classnames from 'classnames'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -6,7 +7,8 @@ import tw from 'twin.macro'
 import { useGetMessagesInfiniteQuery } from '../../../../../apis'
 import { StyledSpin } from '../../../../../components/Spin'
 import { SocketContext } from '../../../../../contexts'
-import { MessageGroup as MessageGroupModel } from '../../../../../models'
+import { MessageGroup as MessageGroupModel, User } from '../../../../../models'
+import { useAuthStore } from '../../../../../stores'
 import {
   addMessageToMessageGroups,
   convertMessagesToMessageGroups,
@@ -18,11 +20,13 @@ type Props = {}
 
 export const MessageList: React.FC<Props> = () => {
   const { id: conversationId } = useParams()
+  const [typingUsers, setTypingUsers] = useState<User[]>([])
   const [messageGroups, setMessageGroups] = useState<MessageGroupModel[]>([])
   const bottomRef = useRef<null | HTMLDivElement>(null)
   const [isFetchMore, setIsFetchMore] = useState(false)
   const socket = useContext(SocketContext)
   const [numOfNewMessagesOnSocket, setNumOfNewMessagesOnSocket] = useState(0)
+  const { user } = useAuthStore()
 
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     useGetMessagesInfiniteQuery(
@@ -48,18 +52,35 @@ export const MessageList: React.FC<Props> = () => {
     )
 
   useEffect(() => {
-    socket.on('connect', () => {})
+    socket.on('connect', () => {
+      console.log('connected')
+    })
+
+    socket.emit('onJoinConversation', { conversationId })
 
     socket.on('onMessage', msg => {
       setNumOfNewMessagesOnSocket(pre => pre + 1)
       setMessageGroups(pre => addMessageToMessageGroups(msg, pre))
     })
 
+    socket.on('onUserTyping', data => {
+      if (user?.id !== data.user.id) {
+        setTypingUsers(pre => [data.user, ...pre])
+      }
+    })
+
+    socket.on('onUserStopTyping', data => {
+      setTypingUsers(pre => pre.filter(item => item.id !== data.userId))
+    })
+
     return () => {
       socket.off('connect')
       socket.off('onMessage')
+      socket.off('onUserTyping')
+      socket.emit('onLeaveConversation', { conversationId })
     }
-  }, [socket])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversationId])
 
   useEffect(() => {
     setMessageGroups(
@@ -91,7 +112,12 @@ export const MessageList: React.FC<Props> = () => {
 
   return (
     <>
-      <Container onScroll={handleScroll}>
+      <Container
+        onScroll={handleScroll}
+        className={classnames({
+          'is-typing': !!typingUsers.length,
+        })}
+      >
         <div ref={bottomRef} className="flex-1" />
         {messageGroups?.map((item, index) => (
           <MessageGroup messageGroup={item} key={index} />
@@ -108,6 +134,7 @@ export const MessageList: React.FC<Props> = () => {
             ))
           )}
       </Container>
+      {!!typingUsers.length && <span>Typing</span>}
       {!isFetching && <MessageInput />}
     </>
   )
@@ -117,6 +144,10 @@ const Container = styled.div`
   ${tw`pt-3 px-3 flex flex-col-reverse`};
   height: calc(100vh - 121px);
   overflow-x: hidden;
+
+  &.is-typing {
+    height: calc(100vh - 143px);
+  }
 
   ::-webkit-scrollbar-track {
     ${tw`bg-gray-700 rounded-full`}
