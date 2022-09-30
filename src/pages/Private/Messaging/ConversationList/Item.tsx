@@ -1,10 +1,11 @@
 import { Avatar, Typography } from 'antd'
 import classnames from 'classnames'
+import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { Conversation } from '../../../../models'
-import { useAuthStore } from '../../../../stores'
+import { useAuthStore, useConversationStore } from '../../../../stores'
 
 type Props = {
   conversation: Conversation
@@ -14,17 +15,24 @@ export const Item: React.FC<Props> = ({ conversation }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const { user } = useAuthStore()
+  const { setConversation } = useConversationStore()
 
   const isYourMessage = conversation.lastMessage?.creator?.id === user?.id
 
-  // const isRead = conversation.lastMessage.readBy.length > 0
-  const isRead = true
-
   const isSelected = location.pathname.split('/').pop() === conversation.id
+
+  useEffect(() => {
+    if (isSelected) {
+      setConversation(conversation)
+    }
+  }, [conversation, isSelected, setConversation])
 
   return (
     <Container
-      onClick={() => navigate(conversation.id)}
+      onClick={() => {
+        navigate(conversation.id)
+        setConversation(conversation)
+      }}
       className={classnames({
         selected: isSelected,
       })}
@@ -36,7 +44,7 @@ export const Item: React.FC<Props> = ({ conversation }) => {
             className={classnames({
               'text-gray-400': true,
               'font-semibold': true,
-              unread: !isRead && !isYourMessage,
+              unread: !true && !isYourMessage,
             })}
           >
             {conversation.name}
@@ -45,7 +53,7 @@ export const Item: React.FC<Props> = ({ conversation }) => {
             className={classnames({
               'text-gray-400': true,
               'font-light': true,
-              unread: !isRead && !isYourMessage,
+              unread: !true && !isYourMessage,
             })}
             style={{ width: 200 }}
             ellipsis

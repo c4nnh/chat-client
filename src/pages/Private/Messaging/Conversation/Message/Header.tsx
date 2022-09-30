@@ -1,14 +1,19 @@
 import { Avatar } from 'antd'
 import styled from 'styled-components'
 import tw, { theme } from 'twin.macro'
+import { useConversationStore } from '../../../../../stores'
 
 type Props = {}
 
 export const Header: React.FC<Props> = () => {
+  const { conversation } = useConversationStore()
+
+  document.title = `Chat: ${conversation?.name || ''}`
+
   return (
     <Container>
-      <Avatar src="https://joeschmoe.io/api/v1/random" size="large" />
-      <Name>Chat name</Name>
+      <Avatar src={conversation?.image} size="large" />
+      <Name>{conversation?.name}</Name>
     </Container>
   )
 }

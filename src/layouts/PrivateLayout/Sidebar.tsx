@@ -2,6 +2,7 @@ import {
   MessageOutlined,
   SettingOutlined,
   UserOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons'
 import { Avatar } from 'antd'
 import classnames from 'classnames'
@@ -13,7 +14,8 @@ import { useAuthStore } from '../../stores'
 
 type MenuItem = {
   icon: React.ReactNode
-  path: string
+  path?: string
+  onClick?: () => void
 }
 
 export const Sidebar: React.FC = () => {
@@ -32,8 +34,15 @@ export const Sidebar: React.FC = () => {
       path: END_POINTS.PRIVATE.PROFILE,
     },
     {
-      icon: <SettingOutlined onClick={logout} />,
+      icon: <SettingOutlined />,
       path: END_POINTS.PRIVATE.SETTING,
+    },
+    {
+      icon: <LogoutOutlined />,
+      onClick: () => {
+        logout()
+        navigate(`${END_POINTS.AUTH.MASTER}`)
+      },
     },
   ]
 
@@ -46,7 +55,11 @@ export const Sidebar: React.FC = () => {
         {menuItems.map(item => (
           <StyledMenuItem
             key={item.path}
-            onClick={() => navigate(item.path, { replace: true })}
+            onClick={
+              item.path
+                ? () => navigate(item.path || '', { replace: true })
+                : item.onClick
+            }
             className={classnames({
               selected: location.pathname.startsWith(`/${item.path}`),
             })}
