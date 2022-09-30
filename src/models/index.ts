@@ -51,6 +51,10 @@ export type RegisterPayload = {
 
 export type RegisterResponse = LoginResponse
 
+export type RefreshTokenResponse = {
+  token: Token
+}
+
 // Model
 export type User = {
   id: string

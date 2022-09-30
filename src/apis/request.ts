@@ -1,9 +1,27 @@
 import { notification } from 'antd'
 import axios, { AxiosError } from 'axios'
-import { ErrorResponse } from '../models'
-import { getToken } from '../utils'
+import { hooks } from '../hooks/external'
+import { ErrorResponse, RefreshTokenResponse } from '../models'
+import { clearToken, getToken, setToken } from '../utils'
 
 const BASE_URL = process.env.REACT_APP_API_URL
+
+const refreshToken = async () => {
+  const { refreshToken } = getToken()
+  if (!refreshToken) {
+    return false
+  }
+  const { data } = await axios
+    .create({ baseURL: BASE_URL })
+    .put<RefreshTokenResponse>('/auth/refresh-token', { refreshToken })
+  if (!data) {
+    clearToken()
+    return false
+  }
+  const { token } = data
+  setToken(token)
+  return true
+}
 
 // Common request
 const request = axios.create({
@@ -34,7 +52,15 @@ request.interceptors.request.use(
 
 request.interceptors.response.use(
   response => response.data,
-  error => Promise.reject(error)
+  async (error: AxiosError<ErrorResponse>) => {
+    if (error.response?.data.error === 'EXPIRED_TOKEN') {
+      const isRefreshSuccess = await refreshToken()
+      if (isRefreshSuccess && hooks.navigate) {
+        hooks.navigate(0)
+      }
+    }
+    return Promise.reject(error)
+  }
 )
 
 // Auth request

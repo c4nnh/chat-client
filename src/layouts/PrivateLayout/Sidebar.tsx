@@ -52,9 +52,9 @@ export const Sidebar: React.FC = () => {
         <Avatar src={user?.image} size="large" />
       </AvatarContainer>
       <StyledMenu>
-        {menuItems.map(item => (
+        {menuItems.map((item, index) => (
           <StyledMenuItem
-            key={item.path}
+            key={index}
             onClick={
               item.path
                 ? () => navigate(item.path || '', { replace: true })
