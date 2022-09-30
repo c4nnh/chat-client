@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import tw from 'twin.macro'
+import { useGetRoomsInfiniteQuery } from '../../../../apis'
 import { useScreen } from '../../../../hooks'
 import { GameCard } from './GameCard'
 
@@ -25,6 +26,10 @@ const games: GameModel[] = [
 
 export const GameList: React.FC<Props> = () => {
   const { isMobileScreen } = useScreen()
+
+  const { data, isFetching } = useGetRoomsInfiniteQuery({
+    gameType: GameType.BUNNY_JUMP,
+  })
 
   return (
     <Container>
