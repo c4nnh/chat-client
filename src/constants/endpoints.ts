@@ -9,5 +9,9 @@ export const END_POINTS = {
     MESSAGE: 'messages',
     PROFILE: 'profile',
     SETTING: 'setting',
+    GAME: {
+      MASTER: 'game',
+      BUNNY_JUMP: 'bunny-jump',
+    },
   },
 }

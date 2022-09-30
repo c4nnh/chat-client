@@ -9,6 +9,7 @@ import classnames from 'classnames'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import tw, { theme } from 'twin.macro'
+import { GameIcon } from '../../assets'
 import { END_POINTS } from '../../constants'
 import { useAuthStore } from '../../stores'
 
@@ -28,6 +29,10 @@ export const Sidebar: React.FC = () => {
     {
       icon: <MessageOutlined />,
       path: END_POINTS.PRIVATE.MESSAGE,
+    },
+    {
+      icon: <GameIcon stroke="white" />,
+      path: END_POINTS.PRIVATE.GAME.MASTER,
     },
     {
       icon: <UserOutlined />,

@@ -3,6 +3,7 @@ import { END_POINTS } from '../../constants'
 import { socket, SocketContext } from '../../contexts'
 import { PrivateLayout } from '../../layouts'
 import { useAuthStore } from '../../stores'
+import { Game } from './Game'
 import { Message } from './Messaging'
 import { Profile } from './Profile'
 import { Setting } from './Setting'
@@ -19,6 +20,10 @@ export const PrivatePages: React.FC = () => {
           <Route
             path={`${END_POINTS.PRIVATE.MESSAGE}/*`}
             element={<Message />}
+          />
+          <Route
+            path={`${END_POINTS.PRIVATE.GAME.MASTER}/*`}
+            element={<Game />}
           />
           <Route path={END_POINTS.PRIVATE.PROFILE} element={<Profile />} />
           <Route path={END_POINTS.PRIVATE.SETTING} element={<Setting />} />

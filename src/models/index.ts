@@ -1,3 +1,5 @@
+import { END_POINTS } from '../constants'
+
 // Common
 export type ErrorResponse = {
   error: string
@@ -108,4 +110,15 @@ export type ConversationParams = PaginationParams & {
 export type CreateConversationDto = {
   userIds: string[]
   content: string
+}
+
+export enum GameType {
+  // @ts-ignore
+  BUNNY_JUMP = END_POINTS.PRIVATE.GAME.BUNNY_JUMP,
+}
+
+export type Game = {
+  path: GameType
+  name: string
+  image?: string
 }
