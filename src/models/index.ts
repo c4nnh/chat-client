@@ -1,5 +1,3 @@
-import { END_POINTS } from '../constants'
-
 // Common
 export type ErrorResponse = {
   error: string
@@ -113,12 +111,54 @@ export type CreateConversationDto = {
 }
 
 export enum GameType {
-  // @ts-ignore
-  BUNNY_JUMP = END_POINTS.PRIVATE.GAME.BUNNY_JUMP,
+  BUNNY_JUMP = 'BUNNY_JUMP',
 }
 
 export type Game = {
-  path: GameType
+  id: string
   name: string
-  image?: string
+  type: GameType
+}
+
+export enum RoomRole {
+  CREATOR = 'CREATOR',
+  MEMBER = 'MEMBER',
+}
+
+export type RoomMember = Pick<User, 'id' | 'name' | 'image'> & {
+  role: RoomRole
+  isReady: boolean
+}
+
+type MaxMemberInRoom = 2 | 3 | 4
+
+export type RoomsParams = PaginationParams & {
+  name?: string
+}
+
+export type Room = {
+  id: string
+  name?: string
+  password?: string
+  max: MaxMemberInRoom
+  game: Game
+  numberOfMember: number
+}
+
+export type CreateRoomDto = Pick<Room, 'password' | 'max' | 'name'>
+
+export type JoinRoomDto = Pick<Room, 'password'>
+
+export type KickMemberDto = {
+  roomId: string
+  memberId: string
+}
+
+export type RoomDetail = {
+  id: string
+  name?: string
+  password?: string
+  max: MaxMemberInRoom
+  game: Game
+  members: RoomMember[]
 }

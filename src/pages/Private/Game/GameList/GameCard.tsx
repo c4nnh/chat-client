@@ -2,10 +2,10 @@ import { Card } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
-import { Game } from '../../../../models'
+import { GameModel } from '.'
 
 type Props = {
-  game: Game
+  game: GameModel
 }
 
 export const GameCard: React.FC<Props> = ({ game }) => {

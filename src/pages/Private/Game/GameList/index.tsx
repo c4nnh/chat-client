@@ -1,12 +1,22 @@
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { useScreen } from '../../../../hooks'
-import { Game, GameType } from '../../../../models'
 import { GameCard } from './GameCard'
 
 type Props = {}
 
-const games: Game[] = [
+enum GameType {
+  // @ts-ignore
+  BUNNY_JUMP = END_POINTS.PRIVATE.GAME.BUNNY_JUMP,
+}
+
+export type GameModel = {
+  path: GameType
+  name: string
+  image?: string
+}
+
+const games: GameModel[] = [
   {
     name: 'Bunny jump',
     path: GameType.BUNNY_JUMP,
