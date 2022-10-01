@@ -16,7 +16,7 @@ export const MessageInput: React.FC<Props> = () => {
   const { id: conversationId } = useParams()
   const { mutate } = useCreateMessageMutation()
   const { user } = useAuthStore()
-  const socket = useContext(SocketContext)
+  const { socket } = useContext(SocketContext)
   const [focused, setFocused] = useState(false)
 
   const onFocus = () => setFocused(true)

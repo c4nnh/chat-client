@@ -24,7 +24,7 @@ export const MessageList: React.FC<Props> = () => {
   const [messageGroups, setMessageGroups] = useState<MessageGroupModel[]>([])
   const bottomRef = useRef<null | HTMLDivElement>(null)
   const [isFetchMore, setIsFetchMore] = useState(false)
-  const socket = useContext(SocketContext)
+  const { socket } = useContext(SocketContext)
   const [numOfNewMessagesOnSocket, setNumOfNewMessagesOnSocket] = useState(0)
   const { user } = useAuthStore()
 
@@ -58,18 +58,18 @@ export const MessageList: React.FC<Props> = () => {
 
     socket.emit('onJoinConversation', { conversationId })
 
-    socket.on('onMessage', msg => {
+    socket.on('onMessage', (msg: any) => {
       setNumOfNewMessagesOnSocket(pre => pre + 1)
       setMessageGroups(pre => addMessageToMessageGroups(msg, pre))
     })
 
-    socket.on('onUserTyping', data => {
+    socket.on('onUserTyping', (data: any) => {
       if (user?.id !== data.user.id) {
         setTypingUsers(pre => [data.user, ...pre])
       }
     })
 
-    socket.on('onUserStopTyping', data => {
+    socket.on('onUserStopTyping', (data: any) => {
       setTypingUsers(pre => pre.filter(item => item.id !== data.userId))
     })
 

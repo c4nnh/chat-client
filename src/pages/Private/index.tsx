@@ -1,8 +1,11 @@
+import { useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { io } from 'socket.io-client'
 import { END_POINTS } from '../../constants'
-import { socket, SocketContext } from '../../contexts'
+import { SocketContext } from '../../contexts'
 import { PrivateLayout } from '../../layouts'
 import { useAuthStore } from '../../stores'
+import { getToken } from '../../utils'
 import { Game } from './Game'
 import { Message } from './Messaging'
 import { Profile } from './Profile'
@@ -11,11 +14,29 @@ import { Setting } from './Setting'
 export const PrivatePages: React.FC = () => {
   const { user } = useAuthStore()
 
+  const socket = io(process.env.REACT_APP_WEBSOCKET_URL!, {
+    extraHeaders: {
+      authorization: `Bearer ${getToken().accessToken}`,
+    },
+    reconnectionAttempts: 3,
+    autoConnect: false,
+  })
+
+  useEffect(() => {
+    if (user) {
+      socket.connect()
+    }
+
+    return () => {
+      socket.disconnect()
+    }
+  }, [socket, user])
+
   if (!user) return <Navigate to={`/${END_POINTS.AUTH.MASTER}`} replace />
 
   return (
     <PrivateLayout>
-      <SocketContext.Provider value={socket}>
+      <SocketContext.Provider value={{ socket }}>
         <Routes>
           <Route
             path={`${END_POINTS.PRIVATE.MESSAGE}/*`}

@@ -13,7 +13,7 @@ type Props = {}
 export const ConversationList: React.FC<Props> = () => {
   const [name, setName] = useState<string>()
   const [conversations, setConversations] = useState<ConversationModel[]>([])
-  const socket = useContext(SocketContext)
+  const { socket } = useContext(SocketContext)
   const [numOfNewConversationsOnSocket, setNumOfNewConversationsOnSocket] =
     useState(0)
 

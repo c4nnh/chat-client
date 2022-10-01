@@ -1,10 +1,10 @@
 import { createContext } from 'react'
-import { io } from 'socket.io-client'
-import { getToken } from '../utils'
+import { Socket } from 'socket.io-client'
 
-export const socket = io(process.env.REACT_APP_WEBSOCKET_URL!, {
-  extraHeaders: {
-    authorization: `Bearer ${getToken().accessToken}`,
-  },
+type SocketContextType = {
+  socket: Socket | any
+}
+
+export const SocketContext = createContext<SocketContextType>({
+  socket: undefined,
 })
-export const SocketContext = createContext(socket)

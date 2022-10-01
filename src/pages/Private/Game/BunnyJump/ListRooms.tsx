@@ -13,7 +13,7 @@ type Props = {}
 
 export const ListRoom: React.FC<Props> = () => {
   const { isMobileScreen } = useScreen()
-  const socket = useContext(SocketContext)
+  const { socket } = useContext(SocketContext)
   const [rooms, setRooms] = useState<Room[]>([])
   const [numOfNewRoomsOnSocket, setNumOfNewRoomsOnSocket] = useState(0)
 
