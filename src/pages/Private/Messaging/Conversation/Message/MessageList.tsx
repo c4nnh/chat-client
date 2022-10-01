@@ -52,10 +52,6 @@ export const MessageList: React.FC<Props> = () => {
     )
 
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log('connected')
-    })
-
     socket.emit('onJoinConversation', { conversationId })
 
     socket.on('onMessage', (msg: any) => {
