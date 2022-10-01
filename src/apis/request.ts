@@ -1,22 +1,21 @@
 import { notification } from 'antd'
 import axios, { AxiosError } from 'axios'
 import { ErrorResponse, RefreshTokenResponse } from '../models'
-import { clearToken, getToken, setToken } from '../utils'
-import Hooks from '../ExternalHooks'
+import { getToken, setToken } from '../utils'
+import { exterrnalHooks } from '../hooks'
+import { END_POINTS } from '../constants'
 
 const BASE_URL = process.env.REACT_APP_API_URL
 
 const redirectToAuthPage = () => {
-  if (Hooks.navigate) {
-    Hooks.navigate('auth/login')
-  }
-
-  clearToken()
+  exterrnalHooks.authStore?.logout()
+  exterrnalHooks.navigate && exterrnalHooks.navigate(END_POINTS.AUTH.MASTER)
+  notification.error({ message: 'Your session is expired. Please login again' })
 }
 
 const refreshToken = async () => {
   const { refreshToken } = getToken()
-  if (!refreshToken) return false
+  if (!refreshToken) return redirectToAuthPage()
   try {
     const { data } = await axios
       .create({ baseURL: BASE_URL })
@@ -27,7 +26,6 @@ const refreshToken = async () => {
     return true
   } catch {
     redirectToAuthPage()
-    return false
   }
 }
 

@@ -2,7 +2,7 @@ import { LoginResponse, User } from '../models'
 import create from 'zustand'
 import { clearToken, setToken } from '../utils'
 
-type AuthState = {
+export type AuthState = {
   user?: User
   me: (user: User) => void
   login: (response: LoginResponse) => void
@@ -24,7 +24,6 @@ export const useAuthStore = create<AuthState>()(set => ({
       user: undefined,
     })
     clearToken()
-    localStorage.removeItem('authStore')
   },
   me: user => {
     set({ user })
