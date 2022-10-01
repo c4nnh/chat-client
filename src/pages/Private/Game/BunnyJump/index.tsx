@@ -1,9 +1,12 @@
-import styled from 'styled-components'
+import { Route, Routes } from 'react-router-dom'
+import { BunnyJumpDetail } from './Detail'
+import { ListRoom } from './ListRooms'
 
-type Props = {}
-
-export const BunnyJump: React.FC<Props> = () => {
-  return <Container>bunny jump</Container>
+export const BunnyJump: React.FC = () => {
+  return (
+    <Routes>
+      <Route path="" element={<ListRoom />} />
+      <Route path=":id" element={<BunnyJumpDetail />} />
+    </Routes>
+  )
 }
-
-const Container = styled.div``

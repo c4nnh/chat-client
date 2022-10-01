@@ -14,8 +14,8 @@ export const PrivatePages: React.FC = () => {
   if (!user) return <Navigate to={`/${END_POINTS.AUTH.MASTER}`} replace />
 
   return (
-    <SocketContext.Provider value={socket}>
-      <PrivateLayout>
+    <PrivateLayout>
+      <SocketContext.Provider value={socket}>
         <Routes>
           <Route
             path={`${END_POINTS.PRIVATE.MESSAGE}/*`}
@@ -32,7 +32,7 @@ export const PrivatePages: React.FC = () => {
             element={<Navigate to={END_POINTS.PRIVATE.MESSAGE} replace />}
           />
         </Routes>
-      </PrivateLayout>
-    </SocketContext.Provider>
+      </SocketContext.Provider>
+    </PrivateLayout>
   )
 }

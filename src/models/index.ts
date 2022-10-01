@@ -110,9 +110,7 @@ export type CreateConversationDto = {
   content: string
 }
 
-export enum GameType {
-  BUNNY_JUMP = 'BUNNY_JUMP',
-}
+export type GameType = 'BUNNY_JUMP'
 
 export type Game = {
   id: string
@@ -140,15 +138,19 @@ export type RoomsParams = PaginationParams & {
 export type Room = {
   id: string
   name?: string
-  password?: string
+  hasPassword: boolean
   max: MaxMemberInRoom
   game: Game
   numberOfMember: number
 }
 
-export type CreateRoomDto = Pick<Room, 'password' | 'max' | 'name'>
+export type CreateRoomDto = Pick<Room, 'max' | 'name'> & {
+  password?: string
+}
 
-export type JoinRoomDto = Pick<Room, 'password'>
+export type JoinRoomDto = {
+  password: string
+}
 
 export type KickMemberDto = {
   roomId: string

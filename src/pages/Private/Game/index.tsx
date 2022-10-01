@@ -13,7 +13,7 @@ export const Game: React.FC<Props> = () => {
       <Routes>
         <Route path={''} element={<GameList />} />
         <Route
-          path={END_POINTS.PRIVATE.GAME.BUNNY_JUMP}
+          path={`${END_POINTS.PRIVATE.GAME.BUNNY_JUMP}/*`}
           element={<BunnyJump />}
         />
         <Route path="" element={<Navigate to={''} replace />} />

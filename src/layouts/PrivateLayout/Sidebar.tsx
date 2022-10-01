@@ -46,7 +46,7 @@ export const Sidebar: React.FC = () => {
       icon: <LogoutOutlined />,
       onClick: () => {
         logout()
-        navigate(`${END_POINTS.AUTH.MASTER}`)
+        navigate(END_POINTS.AUTH.MASTER)
       },
     },
   ]

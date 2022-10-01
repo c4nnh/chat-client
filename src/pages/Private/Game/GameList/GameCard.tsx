@@ -15,7 +15,7 @@ export const GameCard: React.FC<Props> = ({ game }) => {
 }
 
 const Container = styled(Card)`
-  ${tw`bg-gray-300 h-[180px] w-[180px]`}
+  ${tw`bg-gray-300 h-[180px] w-[180px] border-none`}
 
   :hover {
     transform: scale(1.25);

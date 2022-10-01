@@ -3,14 +3,14 @@ import styled from 'styled-components'
 import tw from 'twin.macro'
 import { Channel } from './Conversation'
 import { ChannelWelcome } from './Conversation/Welcome'
-import { Conversation } from './ConversationList'
+import { ConversationList } from './ConversationList'
 
 type Props = {}
 
 export const Message: React.FC<Props> = () => {
   return (
     <Container>
-      <Conversation />
+      <ConversationList />
       <Routes>
         <Route path="" element={<ChannelWelcome />} />
         <Route path=":id" element={<Channel />} />

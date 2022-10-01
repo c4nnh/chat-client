@@ -10,7 +10,7 @@ import { Item } from './Item'
 
 type Props = {}
 
-export const Conversation: React.FC<Props> = () => {
+export const ConversationList: React.FC<Props> = () => {
   const [name, setName] = useState<string>()
   const [conversations, setConversations] = useState<ConversationModel[]>([])
   const socket = useContext(SocketContext)
@@ -88,13 +88,13 @@ export const Conversation: React.FC<Props> = () => {
     <Container>
       <Header onSearch={setName} />
       <List onScroll={onScroll}>
-        {isFetching &&
-          Array.from(Array(10).keys()).map(item => (
-            <StyledSkeletonButton key={item} />
-          ))}
-        {conversations.map(item => (
-          <Item key={item.id} conversation={item} />
-        ))}
+        {isFetching
+          ? Array.from(Array(10).keys()).map(item => (
+              <StyledSkeletonButton key={item} />
+            ))
+          : conversations.map(item => (
+              <Item key={item.id} conversation={item} />
+            ))}
         {isFetchingNextPage && <StyledSkeletonButton />}
       </List>
     </Container>

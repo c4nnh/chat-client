@@ -119,20 +119,20 @@ export const MessageList: React.FC<Props> = () => {
         })}
       >
         <div ref={bottomRef} className="flex-1" />
-        {messageGroups?.map((item, index) => (
-          <MessageGroup messageGroup={item} key={index} />
-        ))}
+        {isFetching
+          ? Array.from(Array(6).keys()).map((_, index) =>
+              Array.from(Array(5).keys()).map((item, idx) => (
+                <StyledSkeletonInput
+                  key={item}
+                  className={index % 2 === 0 ? 'justify-end' : ''}
+                  width={`${Math.floor((((idx % 3) + 1) * 100) / 7)}%`}
+                />
+              ))
+            )
+          : messageGroups?.map((item, index) => (
+              <MessageGroup messageGroup={item} key={index} />
+            ))}
         {isFetchingNextPage && <StyledSpin />}
-        {isFetching &&
-          Array.from(Array(6).keys()).map((_, index) =>
-            Array.from(Array(5).keys()).map((item, idx) => (
-              <StyledSkeletonInput
-                key={item}
-                className={index % 2 === 0 ? 'justify-end' : ''}
-                width={`${Math.floor((((idx % 3) + 1) * 100) / 7)}%`}
-              />
-            ))
-          )}
       </Container>
       {!!typingUsers.length && <span>Typing</span>}
       {!isFetching && <MessageInput />}

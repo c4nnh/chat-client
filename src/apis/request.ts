@@ -1,26 +1,29 @@
 import { notification } from 'antd'
 import axios, { AxiosError } from 'axios'
-import { hooks } from '../hooks/external'
 import { ErrorResponse, RefreshTokenResponse } from '../models'
 import { clearToken, getToken, setToken } from '../utils'
 
 const BASE_URL = process.env.REACT_APP_API_URL
 
+const redirectToAuthPage = () => {
+  clearToken()
+}
+
 const refreshToken = async () => {
   const { refreshToken } = getToken()
-  if (!refreshToken) {
+  if (!refreshToken) return false
+  try {
+    const { data } = await axios
+      .create({ baseURL: BASE_URL })
+      .put<RefreshTokenResponse>('/auth/refresh-token', { refreshToken })
+    if (!data) return false
+    const { token } = data
+    setToken(token)
+    return true
+  } catch {
+    redirectToAuthPage()
     return false
   }
-  const { data } = await axios
-    .create({ baseURL: BASE_URL })
-    .put<RefreshTokenResponse>('/auth/refresh-token', { refreshToken })
-  if (!data) {
-    clearToken()
-    return false
-  }
-  const { token } = data
-  setToken(token)
-  return true
 }
 
 // Common request
@@ -55,8 +58,32 @@ request.interceptors.response.use(
   async (error: AxiosError<ErrorResponse>) => {
     if (error.response?.data.error === 'EXPIRED_TOKEN') {
       const isRefreshSuccess = await refreshToken()
-      if (isRefreshSuccess && hooks.navigate) {
-        hooks.navigate(0)
+      if (isRefreshSuccess) {
+        const { method, url, data, params } = error.config
+        try {
+          const { accessToken } = getToken()
+          const req = axios.create({
+            baseURL: BASE_URL,
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+            data: data ? JSON.parse(data) : data,
+            params,
+          })
+          switch (method) {
+            case 'get':
+              return (await req.get(url || '', { params })).data
+            case 'post':
+              return (await req.post(url || '', { data })).data
+            case 'put':
+            case 'patch':
+              return (await req.put(url || '', { data })).data
+            case 'delete':
+              return (await req.delete(url || '', { params })).data
+          }
+        } catch {
+          redirectToAuthPage()
+        }
       }
     }
     return Promise.reject(error)
