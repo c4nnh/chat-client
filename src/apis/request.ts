@@ -2,10 +2,15 @@ import { notification } from 'antd'
 import axios, { AxiosError } from 'axios'
 import { ErrorResponse, RefreshTokenResponse } from '../models'
 import { clearToken, getToken, setToken } from '../utils'
+import Hooks from '../ExternalHooks'
 
 const BASE_URL = process.env.REACT_APP_API_URL
 
 const redirectToAuthPage = () => {
+  if (Hooks.navigate) {
+    Hooks.navigate('auth/login')
+  }
+
   clearToken()
 }
 
