@@ -62,30 +62,30 @@ request.interceptors.response.use(
     if (error.response?.data.error === 'EXPIRED_TOKEN') {
       const isRefreshSuccess = await refreshToken()
       if (isRefreshSuccess) {
-        const { method, url, data, params } = error.config
-        try {
-          const { accessToken } = getToken()
-          const req = axios.create({
-            baseURL: BASE_URL,
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-            data: data ? JSON.parse(data) : data,
-            params,
-          })
-          switch (method) {
-            case 'get':
-              return (await req.get(url || '', { params })).data
-            case 'post':
-              return (await req.post(url || '', { data })).data
-            case 'put':
-            case 'patch':
-              return (await req.put(url || '', { data })).data
-            case 'delete':
-              return (await req.delete(url || '', { params })).data
-          }
-        } catch {
-          redirectToAuthPage()
+        const {
+          method,
+          url,
+          data: stringifyData,
+          params,
+        } = (error.toJSON() as AxiosError<ErrorResponse>).config
+        const data = stringifyData ? JSON.parse(stringifyData) : stringifyData
+        const { accessToken } = getToken()
+        const req = axios.create({
+          baseURL: BASE_URL,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        switch (method) {
+          case 'get':
+            return (await req.get(url || '', { params })).data
+          case 'post':
+            return (await req.post(url || '', data)).data
+          case 'put':
+          case 'patch':
+            return (await req.put(url || '', data)).data
+          case 'delete':
+            return (await req.delete(url || '', { params })).data
         }
       }
     }
