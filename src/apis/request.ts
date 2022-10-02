@@ -89,6 +89,10 @@ request.interceptors.response.use(
         }
       }
     }
+    notification.error({
+      message: error.response?.data.error,
+      description: error.response?.data.message,
+    })
     return Promise.reject(error)
   }
 )

@@ -137,9 +137,8 @@ export const MessageList: React.FC<Props> = () => {
 }
 
 const Container = styled.div`
-  ${tw`pt-3 px-3 flex flex-col-reverse`};
+  ${tw`pt-3 px-3 flex flex-col-reverse overflow-x-hidden`};
   height: calc(100vh - 121px);
-  overflow-x: hidden;
 
   &.is-typing {
     height: calc(100vh - 143px);

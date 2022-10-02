@@ -160,8 +160,6 @@ export type KickMemberDto = {
 export type RoomDetail = {
   id: string
   name?: string
-  password?: string
-  max: MaxMemberInRoom
   game: Game
   members: RoomMember[]
 }

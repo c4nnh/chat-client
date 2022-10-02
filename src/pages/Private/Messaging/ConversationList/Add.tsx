@@ -1,5 +1,4 @@
-import { useQueryClient } from '@tanstack/react-query'
-import { Form, Modal } from 'antd'
+import { Avatar, Form, Modal } from 'antd'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -14,12 +13,11 @@ type Props = {
 }
 export const Add: React.FC<Props> = ({ open, onClose }) => {
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
 
   const formMethods = useForm<CreateConversationDto>()
   const [email, setEmail] = useState<string>()
 
-  const { handleSubmit, reset } = formMethods
+  const { handleSubmit, reset, watch } = formMethods
 
   const { mutate, isLoading: isSendingMessage } =
     useCreateConversationMutation()
@@ -46,7 +44,6 @@ export const Add: React.FC<Props> = ({ open, onClose }) => {
   const onSend = handleSubmit(data => {
     mutate(data, {
       onSuccess: res => {
-        queryClient.invalidateQueries(['getConversations'])
         navigate(res.id)
         reset()
         onClose()
@@ -65,6 +62,9 @@ export const Add: React.FC<Props> = ({ open, onClose }) => {
       okText="Send"
       confirmLoading={isSendingMessage}
       onOk={onSend}
+      okButtonProps={{
+        disabled: !watch('content') || !watch('userIds'),
+      }}
     >
       <FormProvider {...formMethods}>
         <Form layout="vertical">
@@ -77,6 +77,12 @@ export const Add: React.FC<Props> = ({ open, onClose }) => {
                   group.data.map(item => ({
                     value: item.id,
                     label: item.name,
+                    optionRender: (
+                      <div className="flex items-center gap-2">
+                        <Avatar src={item.image} />
+                        <span>{item.name}</span>
+                      </div>
+                    ),
                   }))
                 )
                 .flat() || []

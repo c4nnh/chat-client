@@ -1,5 +1,5 @@
 import { Skeleton } from 'antd'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { useGetRoomsInfiniteQuery } from '../../../../apis'
@@ -45,15 +45,38 @@ export const ListRoom: React.FC<Props> = () => {
     setRooms((data?.pages || []).map(item => item.data).flat())
   }, [data])
 
+  const updateNumberOfMember = useCallback(
+    (roomId: string, changeValue: number) => {
+      setRooms(pre => {
+        const index = pre.findIndex(item => item.id === roomId)
+        if (index > -1) {
+          return [
+            ...pre.slice(0, index),
+            {
+              ...pre[index],
+              numberOfMember: pre[index].numberOfMember + changeValue,
+            },
+            ...pre.slice(index + 1),
+          ]
+        }
+        return pre
+      })
+    },
+    []
+  )
+
   useEffect(() => {
+    socket.emit('joinWaitingRoom')
+
     socket.on('onRoom', (room: Room) => {
       setRooms(pre => [room, ...pre])
       setNumOfNewRoomsOnSocket(pre => pre + 1)
     })
 
-    socket.on('onDeleteRoom', (id: string) => {
+    socket.on('onDeleteRoom', (data: { roomId: string }) => {
+      const { roomId } = data
       setRooms(pre => {
-        const newList = pre.filter(item => item.id !== id)
+        const newList = pre.filter(item => item.id !== roomId)
         if (newList.length < pre.length) {
           setNumOfNewRoomsOnSocket(pre => pre - 1)
         }
@@ -61,11 +84,24 @@ export const ListRoom: React.FC<Props> = () => {
       })
     })
 
+    socket.on('onUserJoinRoom', (data: { roomId: string }) => {
+      const { roomId } = data
+      updateNumberOfMember(roomId, 1)
+    })
+
+    socket.on('onUserLeaveRoom', (data: { roomId: string }) => {
+      const { roomId } = data
+      updateNumberOfMember(roomId, -1)
+    })
+
     return () => {
       socket.off('onMessage')
       socket.off('onDeleteRoom')
+      socket.off('onUserJoinRoom')
+      socket.off('onUserLeaveRoom')
+      socket.emit('leaveWaitingRoom')
     }
-  }, [socket])
+  }, [socket, updateNumberOfMember])
 
   return (
     <Container onScroll={onScroll}>
@@ -87,9 +123,7 @@ export const ListRoom: React.FC<Props> = () => {
 }
 
 const Container = styled.div`
-  ${tw`flex flex-col gap-8 px-40 pt-20 pb-6 cursor-pointer`}
-  height: 100vh;
-  overflow-x: hidden;
+  ${tw`flex flex-col gap-8 px-40 pt-20 pb-6 cursor-pointer h-screen overflow-x-hidden`}
 
   ::-webkit-scrollbar-track {
     ${tw`bg-gray-500 rounded-full`}

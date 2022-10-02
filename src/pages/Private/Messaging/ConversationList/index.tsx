@@ -60,7 +60,7 @@ export const ConversationList: React.FC<Props> = () => {
             ...pre[index],
             ...conversation,
           },
-          ...pre.slice(index + 1, pre.length),
+          ...pre.slice(index + 1),
         ]
       }
     })
@@ -106,9 +106,8 @@ const Container = styled.div`
 `
 
 const List = styled.div`
-  ${tw`flex flex-col gap-3 p-3`};
+  ${tw`flex flex-col gap-3 p-3 overflow-x-hidden`};
   height: calc(100vh - 65px);
-  overflow-x: hidden;
 
   ::-webkit-scrollbar-track {
     ${tw`bg-gray-800 rounded-full`}

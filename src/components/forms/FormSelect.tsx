@@ -3,10 +3,12 @@ import { DefaultOptionType } from 'antd/lib/select'
 import { ControllerProps } from 'react-hook-form'
 import styled from 'styled-components'
 import { ControlledFormItem } from './ControlledFormItem'
+import tw from 'twin.macro'
 
 export type SelectOption = {
   value: string
   label: string | React.ReactNode
+  optionRender?: React.ReactNode
 }
 
 type Props = {
@@ -58,7 +60,7 @@ export const FormSelect: React.FC<Props> = ({
             )
             .map(item => (
               <Select.Option value={item.value} key={item.value}>
-                {item.label}
+                {item.optionRender || item.label}
               </Select.Option>
             ))}
         </StyledSelect>
@@ -69,7 +71,10 @@ export const FormSelect: React.FC<Props> = ({
 
 const StyledSelect = styled(Select).attrs({})`
   .ant-select-selection-item-remove {
-    display: flex;
-    align-items: center;
+    ${tw`flex items-center`}
+  }
+
+  .ant-select-selection-item {
+    ${tw`flex items-center h-fit`}
   }
 `

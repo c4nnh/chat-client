@@ -1,10 +1,15 @@
 import { ArrowRightOutlined, LockOutlined } from '@ant-design/icons'
-import { Button, Card } from 'antd'
+import { Button, Card, Form, Modal } from 'antd'
+import { useContext, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
+import { useJoinRoomMutation } from '../../../../apis'
 import { ChairIcon } from '../../../../assets'
-import { Room } from '../../../../models'
+import { FormPassword } from '../../../../components'
+import { SocketContext } from '../../../../contexts'
+import { JoinRoomDto, Room } from '../../../../models'
 
 type Props = {
   room: Room
@@ -13,15 +18,38 @@ type Props = {
 export const RoomItem: React.FC<Props> = ({ room }) => {
   const navigate = useNavigate()
 
+  const { socket } = useContext(SocketContext)
+  const [openJoinModal, setOpenJoinModal] = useState(false)
+  const formMethods = useForm<JoinRoomDto>()
+  const { handleSubmit, watch } = formMethods
+
+  const { mutate, isLoading } = useJoinRoomMutation()
+
   const joinRoom = () => {
     if (room.hasPassword) {
-      alert(123)
+      setOpenJoinModal(true)
+    } else {
+      handleJoinRoom()
     }
-    navigate(room.id)
   }
 
+  const handleJoinRoom = handleSubmit(data => {
+    mutate(
+      {
+        roomId: room.id,
+        dto: data,
+      },
+      {
+        onSuccess: () => {
+          navigate(room.id)
+          socket.emit('joinRoom', { roomId: room.id })
+        },
+      }
+    )
+  })
+
   return (
-    <Container onClick={joinRoom}>
+    <Container>
       <div className="room-info flex flex-col h-full">
         <div className="h-[14px]">
           {room.hasPassword && <LockOutlined className="flex justify-end" />}
@@ -37,11 +65,52 @@ export const RoomItem: React.FC<Props> = ({ room }) => {
           ))}
         </TableContainer>
       </div>
-      <div className="join-button">
-        <JoinButton type="primary" icon={<ArrowRightOutlined />}>
-          Join
-        </JoinButton>
+      <div className="join-button" onClick={joinRoom}>
+        {room.numberOfMember < room.max ? (
+          <JoinButton
+            type="primary"
+            icon={<ArrowRightOutlined />}
+            loading={isLoading}
+          >
+            Join
+          </JoinButton>
+        ) : (
+          <div>full</div>
+        )}
       </div>
+      <Modal
+        open={openJoinModal}
+        closable={false}
+        destroyOnClose
+        maskClosable={false}
+        title={`Join room ${room.name ? `:${room.name}` : ''}`}
+        onCancel={() => {
+          setOpenJoinModal(false)
+        }}
+        onOk={handleJoinRoom}
+        confirmLoading={isLoading}
+        okButtonProps={{
+          disabled: !watch('password'),
+        }}
+      >
+        <FormProvider {...formMethods}>
+          <Form
+            layout="vertical"
+            size="middle"
+            className="flex flex-col"
+            onFinish={handleJoinRoom}
+          >
+            <FormPassword
+              name="password"
+              label="Password"
+              inputProps={{
+                readOnly: isLoading,
+                placeholder: 'Enter password to join room',
+              }}
+            />
+          </Form>
+        </FormProvider>
+      </Modal>
     </Container>
   )
 }
@@ -54,23 +123,15 @@ const Container = styled(Card)`
   }
 
   .join-button {
-    display: none;
-    z-index: 1;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
+    ${tw`hidden z-[1] absolute w-full h-full top-0 left-0`}
   }
 
   :hover {
     .room-info {
-      opacity: 0.3;
+      ${tw`opacity-30`}
     }
     .join-button {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      ${tw`flex items-center justify-center`}
     }
   }
   transition: 0.5s;

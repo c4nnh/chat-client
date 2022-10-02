@@ -33,7 +33,7 @@ type QueryKeys = {
 
 type Variables = {
   create: CreateRoomDto
-  join: { roomId: string; dto: JoinRoomDto }
+  join: { roomId: string; dto?: JoinRoomDto }
   kick: KickMemberDto
   ready: { roomId: string }
   updateReadyStatus: { isReady: false }
