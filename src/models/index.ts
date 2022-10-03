@@ -112,12 +112,6 @@ export type CreateConversationDto = {
 
 export type GameType = 'BUNNY_JUMP'
 
-export type Game = {
-  id: string
-  name: string
-  type: GameType
-}
-
 export enum RoomRole {
   CREATOR = 'CREATOR',
   MEMBER = 'MEMBER',
@@ -140,7 +134,7 @@ export type Room = {
   name?: string
   hasPassword: boolean
   max: MaxMemberInRoom
-  game: Game
+  game: GameType
   numberOfMember: number
 }
 
@@ -160,6 +154,6 @@ export type KickMemberDto = {
 export type RoomDetail = {
   id: string
   name?: string
-  game: Game
+  game: GameType
   members: RoomMember[]
 }

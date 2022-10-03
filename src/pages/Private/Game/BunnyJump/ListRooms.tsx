@@ -84,8 +84,7 @@ export const ListRoom: React.FC<Props> = () => {
       })
     })
 
-    socket.on('onUserJoinRoom', (data: { roomId: string }) => {
-      const { roomId } = data
+    socket.on('onUserJoinRoom', (roomId: string) => {
       updateNumberOfMember(roomId, 1)
     })
 
@@ -95,7 +94,7 @@ export const ListRoom: React.FC<Props> = () => {
     })
 
     return () => {
-      socket.off('onMessage')
+      socket.off('onRoom')
       socket.off('onDeleteRoom')
       socket.off('onUserJoinRoom')
       socket.off('onUserLeaveRoom')

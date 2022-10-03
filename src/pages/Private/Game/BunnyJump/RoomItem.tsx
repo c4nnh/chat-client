@@ -54,7 +54,7 @@ export const RoomItem: React.FC<Props> = ({ room }) => {
         <div className="h-[14px]">
           {room.hasPassword && <LockOutlined className="flex justify-end" />}
         </div>
-        <span className="flex justify-center font-bold">{room.game.name}</span>
+        <span className="flex justify-center font-bold">{room.game}</span>
         <span className="flex justify-center h-[22px]">{room.name}</span>
         <TableContainer>
           {Array.from(Array(room.numberOfMember).keys()).map(item => (
