@@ -68,10 +68,12 @@ export const ConversationList: React.FC<Props> = () => {
 
   useEffect(() => {
     socket.on('onNewConversation', (conversation: ConversationModel) => {
+      console.log(conversation)
+
       updateConversations(conversation)
     })
 
-    socket.on('onMessage', (message: Message) => {
+    socket.on('onNewMessage', (message: Message) => {
       updateConversations({
         ...message.conversation,
         lastMessage: message,
@@ -80,7 +82,7 @@ export const ConversationList: React.FC<Props> = () => {
 
     return () => {
       socket.off('onNewConversation')
-      socket.off('onMessage')
+      socket.off('onNewMessage')
     }
   }, [socket, updateConversations])
 
