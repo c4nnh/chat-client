@@ -13,7 +13,7 @@ export const BunnyJumpDetail: React.FC = () => {
 
   const [members, setMembers] = useState<RoomMember[]>([])
 
-  const { data, isFetching } = useGetRoomDetailQuery(id!, {
+  const { isFetching } = useGetRoomDetailQuery(id!, {
     enabled: !!id,
     onSuccess: res => setMembers(res.members),
     onError: () =>
@@ -23,7 +23,7 @@ export const BunnyJumpDetail: React.FC = () => {
   })
 
   useEffect(() => {
-    if (data && id) {
+    if (id) {
       socket.emit('joinRoom', { rommId: id })
 
       socket.on('onUserJoinRoom', (newMember: RoomMember) => {
@@ -54,14 +54,9 @@ export const BunnyJumpDetail: React.FC = () => {
       socket.off('joinRoom')
       socket.off('onUserJoinRoom')
       socket.off('onUserLeaveRoom')
-    }
-  }, [socket, data, id])
-
-  useEffect(() => {
-    return () => {
       socket.emit('leaveRoom', { roomId: id })
     }
-  }, [id, socket])
+  }, [socket, id])
 
   if (isFetching) {
     return <span>Loading</span>

@@ -68,7 +68,7 @@ export const ListRoom: React.FC<Props> = () => {
   useEffect(() => {
     socket.emit('joinWaitingRoom')
 
-    socket.on('onRoom', (room: Room) => {
+    socket.on('onNewRoom', (room: Room) => {
       setRooms(pre => [room, ...pre])
       setNumOfNewRoomsOnSocket(pre => pre + 1)
     })
@@ -94,7 +94,7 @@ export const ListRoom: React.FC<Props> = () => {
     })
 
     return () => {
-      socket.off('onRoom')
+      socket.off('onNewRoom')
       socket.off('onDeleteRoom')
       socket.off('onUserJoinRoom')
       socket.off('onUserLeaveRoom')
