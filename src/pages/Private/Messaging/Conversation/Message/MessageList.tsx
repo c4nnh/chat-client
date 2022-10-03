@@ -54,7 +54,7 @@ export const MessageList: React.FC<Props> = () => {
   useEffect(() => {
     socket.emit('onJoinConversation', { conversationId })
 
-    socket.on('onMessage', (msg: any) => {
+    socket.on('onNewMessage', (msg: any) => {
       setNumOfNewMessagesOnSocket(pre => pre + 1)
       setMessageGroups(pre => addMessageToMessageGroups(msg, pre))
     })
@@ -70,8 +70,7 @@ export const MessageList: React.FC<Props> = () => {
     })
 
     return () => {
-      socket.off('connect')
-      socket.off('onMessage')
+      socket.off('onNewMessage')
       socket.off('onUserTyping')
       socket.emit('onLeaveConversation', { conversationId })
     }

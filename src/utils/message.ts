@@ -38,6 +38,15 @@ export const addMessageToMessageGroups = (
   message: Message,
   messageGroups: MessageGroup[]
 ): MessageGroup[] => {
+  if (!messageGroups.length) {
+    return [
+      {
+        creator: message.creator,
+        messages: [message],
+      },
+    ]
+  }
+
   const [firstGroup, ...rest] = messageGroups
   if (firstGroup.creator.id === message.creator.id) {
     return [

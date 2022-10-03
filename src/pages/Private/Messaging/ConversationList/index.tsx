@@ -1,5 +1,5 @@
 import { Skeleton } from 'antd'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { useGetConversationsInfiniteQuery } from '../../../../apis'
@@ -47,7 +47,7 @@ export const ConversationList: React.FC<Props> = () => {
     setConversations((data?.pages || []).map(item => item.data).flat())
   }, [data])
 
-  const updateConversations = (conversation: ConversationModel) => {
+  const updateConversations = useCallback((conversation: ConversationModel) => {
     setConversations(pre => {
       const index = pre.findIndex(item => item.id === conversation.id)
       if (index < 0) {
@@ -64,10 +64,10 @@ export const ConversationList: React.FC<Props> = () => {
         ]
       }
     })
-  }
+  }, [])
 
   useEffect(() => {
-    socket.on('onConversation', (conversation: ConversationModel) => {
+    socket.on('onNewConversation', (conversation: ConversationModel) => {
       updateConversations(conversation)
     })
 
@@ -79,10 +79,10 @@ export const ConversationList: React.FC<Props> = () => {
     })
 
     return () => {
-      socket.off('onConversation')
+      socket.off('onNewConversation')
       socket.off('onMessage')
     }
-  }, [socket])
+  }, [socket, updateConversations])
 
   return (
     <Container>

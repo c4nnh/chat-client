@@ -58,7 +58,9 @@ export const Item: React.FC<Props> = ({ conversation }) => {
             style={{ width: 200 }}
             ellipsis
           >
-            {conversation.lastMessage?.creator?.id === user?.id ? `You: ` : ''}
+            {conversation.lastMessage?.creator?.id === user?.id
+              ? `You: `
+              : `${conversation.lastMessage.creator.name}: `}
             {conversation.lastMessage?.content}
           </Typography.Text>
         </Title>
