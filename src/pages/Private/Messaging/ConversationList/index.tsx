@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import tw from 'twin.macro'
 import { useGetConversationsInfiniteQuery } from '../../../../apis'
 import { SocketContext } from '../../../../contexts'
-import { Conversation as ConversationModel, Message } from '../../../../models'
+import { Conversation as ConversationModel } from '../../../../models'
 import { Header } from './Header'
 import { Item } from './Item'
 
@@ -55,11 +55,11 @@ export const ConversationList: React.FC<Props> = () => {
         return [conversation, ...pre]
       } else {
         return [
-          ...pre.slice(0, index),
           {
             ...pre[index],
             ...conversation,
           },
+          ...pre.slice(0, index),
           ...pre.slice(index + 1),
         ]
       }
@@ -67,22 +67,12 @@ export const ConversationList: React.FC<Props> = () => {
   }, [])
 
   useEffect(() => {
-    socket.on('onNewConversation', (conversation: ConversationModel) => {
-      console.log(conversation)
-
+    socket.on('onConversationsUpdate', (conversation: ConversationModel) => {
       updateConversations(conversation)
     })
 
-    socket.on('onNewMessage', (message: Message) => {
-      updateConversations({
-        ...message.conversation,
-        lastMessage: message,
-      })
-    })
-
     return () => {
-      socket.off('onNewConversation')
-      socket.off('onNewMessage')
+      socket.off('onConversationsUpdate')
     }
   }, [socket, updateConversations])
 
