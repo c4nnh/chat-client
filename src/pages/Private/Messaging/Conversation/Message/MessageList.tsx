@@ -1,32 +1,36 @@
 import { Skeleton } from 'antd'
 import classnames from 'classnames'
 import { useContext, useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { useGetMessagesInfiniteQuery } from '../../../../../apis'
 import { StyledSpin } from '../../../../../components'
+import { END_POINTS } from '../../../../../constants'
 import { SocketContext } from '../../../../../contexts'
 import { MessageGroup as MessageGroupModel, User } from '../../../../../models'
-import { useAuthStore } from '../../../../../stores'
+import { useAuthStore, useSendingMessagesStore } from '../../../../../stores'
 import {
   addMessageToMessageGroups,
   convertMessagesToMessageGroups,
 } from '../../../../../utils'
 import { MessageGroup } from './MessageGroup'
 import { MessageInput } from './MessageInput'
+import { SendingMessages } from './SendingMessages'
 
 type Props = {}
 
 export const MessageList: React.FC<Props> = () => {
+  const navigate = useNavigate()
   const { id: conversationId } = useParams()
+  const { socket } = useContext(SocketContext)
+  const { user } = useAuthStore()
+  const { sendingMessages } = useSendingMessagesStore()
   const [typingUsers, setTypingUsers] = useState<User[]>([])
   const [messageGroups, setMessageGroups] = useState<MessageGroupModel[]>([])
-  const bottomRef = useRef<null | HTMLDivElement>(null)
-  const [isFetchMore, setIsFetchMore] = useState(false)
-  const { socket } = useContext(SocketContext)
   const [numOfNewMessagesOnSocket, setNumOfNewMessagesOnSocket] = useState(0)
-  const { user } = useAuthStore()
+  const [isFetchMore, setIsFetchMore] = useState(false)
+  const bottomRef = useRef<null | HTMLDivElement>(null)
 
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     useGetMessagesInfiniteQuery(
@@ -47,6 +51,9 @@ export const MessageList: React.FC<Props> = () => {
             }
           }
           return undefined
+        },
+        onError: () => {
+          navigate(`/${END_POINTS.PRIVATE.MASTER}`)
         },
       }
     )
@@ -90,7 +97,7 @@ export const MessageList: React.FC<Props> = () => {
       bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messageGroups])
+  }, [messageGroups, sendingMessages])
 
   const handleScroll = (e: any) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target
@@ -114,7 +121,8 @@ export const MessageList: React.FC<Props> = () => {
         })}
       >
         <div ref={bottomRef} className="flex-1" />
-        {isFetching
+        <SendingMessages />
+        {isFetching && !isFetchingNextPage
           ? Array.from(Array(6).keys()).map((_, index) =>
               Array.from(Array(5).keys()).map((item, idx) => (
                 <StyledSkeletonInput
@@ -130,7 +138,7 @@ export const MessageList: React.FC<Props> = () => {
         {isFetchingNextPage && <StyledSpin />}
       </Container>
       {!!typingUsers.length && <span>Typing</span>}
-      {!isFetching && <MessageInput />}
+      {(!isFetching || isFetchingNextPage) && <MessageInput />}
     </>
   )
 }

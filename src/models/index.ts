@@ -80,6 +80,12 @@ export type Message = {
   // readBy: Pick<User, 'id' | 'image'>[]
 }
 
+export type SendingMessage = Pick<Message, 'content'> & {
+  id: number
+  isSending?: boolean
+  isFailed?: boolean
+}
+
 export type CreateMessageDto = {
   content: string
   conversationId: string

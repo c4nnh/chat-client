@@ -1,39 +1,77 @@
 import { LikeFilled } from '@ant-design/icons'
-import { Input } from 'antd'
-import { useContext, useEffect, useState } from 'react'
+import { Input, InputRef } from 'antd'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import tw, { theme } from 'twin.macro'
 import { useCreateMessageMutation } from '../../../../../apis'
 import { SendIcon } from '../../../../../assets'
 import { SocketContext } from '../../../../../contexts'
-import { useAuthStore } from '../../../../../stores'
+import { useAuthStore, useSendingMessagesStore } from '../../../../../stores'
 
 type Props = {}
 
 export const MessageInput: React.FC<Props> = () => {
-  const [content, setContent] = useState('')
   const { id: conversationId } = useParams()
-  const { mutate } = useCreateMessageMutation()
   const { user } = useAuthStore()
+  const { sendingMessages, setSendingMessages } = useSendingMessagesStore()
   const { socket } = useContext(SocketContext)
+  const [content, setContent] = useState('')
   const [focused, setFocused] = useState(false)
+  const { mutate, isLoading } = useCreateMessageMutation()
+  const inputRef = useRef<InputRef>(null)
 
   const onFocus = () => setFocused(true)
 
   const onBlur = () => setFocused(false)
 
   const onSend = (value?: string) => {
+    if (isLoading) return
+
+    const currentTime = new Date().getTime()
+    setSendingMessages([
+      ...sendingMessages,
+      {
+        id: currentTime,
+        content: value || content,
+        isSending: true,
+        isFailed: false,
+      },
+    ])
+    setContent('')
     mutate(
       {
         content: value || content,
         conversationId: conversationId!,
       },
       {
-        onSuccess: () => setContent(''),
+        onSuccess: data => {
+          setSendingMessages(
+            sendingMessages.filter(
+              item => item.content !== data.content && item.isSending
+            )
+          )
+        },
+        onError: (error: any) => {
+          const msg = JSON.parse((error.toJSON() as any).config.data).content
+          setSendingMessages([
+            {
+              id: currentTime,
+              content: msg,
+              isSending: false,
+              isFailed: true,
+            },
+          ])
+        },
       }
     )
   }
+
+  useEffect(() => {
+    if (!isLoading) {
+      inputRef?.current?.focus()
+    }
+  }, [isLoading])
 
   useEffect(() => {
     if (focused && !!content) {
@@ -53,6 +91,7 @@ export const MessageInput: React.FC<Props> = () => {
   return (
     <Container>
       <StyledInput
+        ref={inputRef}
         value={content}
         onChange={e => setContent(e.target.value)}
         placeholder="Aa"
@@ -61,6 +100,7 @@ export const MessageInput: React.FC<Props> = () => {
             onSend()
           }
         }}
+        disabled={isLoading}
         onFocus={onFocus}
         onBlur={onBlur}
       />
@@ -81,6 +121,10 @@ const StyledInput = styled(Input)`
   ${tw`bg-gray-600 rounded-full text-gray-300`};
 
   border: none;
+
+  &.ant-input-disabled {
+    ${tw`bg-gray-600`}
+  }
 
   .ant-input {
     ${tw`bg-gray-600 text-gray-300 h-9`}

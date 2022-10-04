@@ -2,14 +2,14 @@ import { notification } from 'antd'
 import axios, { AxiosError } from 'axios'
 import { ErrorResponse, RefreshTokenResponse } from '../models'
 import { getToken, setToken } from '../utils'
-import { exterrnalHooks } from '../hooks'
+import { externalHooks } from '../hooks'
 import { END_POINTS } from '../constants'
 
 const BASE_URL = process.env.REACT_APP_API_URL
 
 const redirectToAuthPage = () => {
-  exterrnalHooks.authStore?.logout()
-  exterrnalHooks.navigate && exterrnalHooks.navigate(END_POINTS.AUTH.MASTER)
+  externalHooks.authStore?.logout()
+  externalHooks.navigate && externalHooks.navigate(END_POINTS.AUTH.MASTER)
   notification.error({ message: 'Your session is expired. Please login again' })
 }
 
@@ -76,17 +76,13 @@ request.interceptors.response.use(
             Authorization: `Bearer ${accessToken}`,
           },
         })
-        switch (method) {
-          case 'get':
-            return (await req.get(url || '', { params })).data
-          case 'post':
-            return (await req.post(url || '', data)).data
-          case 'put':
-          case 'patch':
-            return (await req.put(url || '', data)).data
-          case 'delete':
-            return (await req.delete(url || '', { params })).data
-        }
+        const response = await req({
+          method,
+          url,
+          data,
+          params,
+        })
+        return response.data
       }
     }
     notification.error({

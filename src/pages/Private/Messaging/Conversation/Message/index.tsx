@@ -5,7 +5,7 @@ import { MessageList } from './MessageList'
 
 type Props = {}
 
-export const Chat: React.FC<Props> = () => {
+export const Message: React.FC<Props> = () => {
   return (
     <Container>
       <Header />
@@ -15,6 +15,6 @@ export const Chat: React.FC<Props> = () => {
 }
 
 const Container = styled.div`
-  ${tw`flex-1 flex flex-col w-80 relative`};
+  ${tw`flex-1 flex flex-col relative`};
   border-right: 1px solid ${theme`colors.gray.600`};
 `
