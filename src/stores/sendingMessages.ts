@@ -10,9 +10,6 @@ export const useSendingMessagesStore = create<SendingMessagesState>()(
   (set, get) => ({
     sendingMessages: [],
     setSendingMessages: value => {
-      console.log('here')
-      console.log(value)
-
       set({
         sendingMessages: value,
       })

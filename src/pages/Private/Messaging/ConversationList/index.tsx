@@ -7,15 +7,19 @@ import { SocketContext } from '../../../../contexts'
 import { Conversation as ConversationModel } from '../../../../models'
 import { Header } from './Header'
 import { Item } from './Item'
+import { useAuthStore } from '../../../../stores'
 
 type Props = {}
 
 export const ConversationList: React.FC<Props> = () => {
+  const { user } = useAuthStore()
   const [name, setName] = useState<string>()
   const [conversations, setConversations] = useState<ConversationModel[]>([])
   const { socket } = useContext(SocketContext)
   const [numOfNewConversationsOnSocket, setNumOfNewConversationsOnSocket] =
     useState(0)
+
+  const newMessageAudio = new Audio('/assets/music/newMessage.mp3')
 
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     useGetConversationsInfiniteQuery(
@@ -69,11 +73,15 @@ export const ConversationList: React.FC<Props> = () => {
   useEffect(() => {
     socket.on('onConversationsUpdate', (conversation: ConversationModel) => {
       updateConversations(conversation)
+      if (conversation.lastMessage.creator.id !== user?.id) {
+        newMessageAudio.play()
+      }
     })
 
     return () => {
       socket.off('onConversationsUpdate')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, updateConversations])
 
   return (
