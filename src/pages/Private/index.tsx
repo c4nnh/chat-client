@@ -28,7 +28,7 @@ export const PrivatePages: React.FC = () => {
     return () => {
       socket.disconnect()
     }
-  }, [socket, user])
+  }, [socket])
 
   if (!user) return <Navigate to={`/${END_POINTS.AUTH.MASTER}`} replace />
 
