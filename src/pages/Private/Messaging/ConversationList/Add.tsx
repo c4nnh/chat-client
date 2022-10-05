@@ -2,8 +2,11 @@ import { Avatar, Form, Modal } from 'antd'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { useCreateConversationMutation } from '../../../../apis'
-import { useGetContactsInfiniteQuery } from '../../../../apis/endpoints/user'
+import {
+  useCreateConversationMutation,
+  useGetContactsInfiniteQuery,
+} from '../../../../apis'
+
 import { FormInput, FormSelect } from '../../../../components'
 import { CreateConversationDto } from '../../../../models'
 

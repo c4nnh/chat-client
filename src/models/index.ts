@@ -65,6 +65,8 @@ export type User = {
   updatedAt: Date
 }
 
+export type UpdateUserDto = Partial<Pick<User, 'image'>>
+
 export type Contact = Pick<User, 'id' | 'name' | 'image' | 'email'>
 
 export type ContactParams = PaginationParams & {
