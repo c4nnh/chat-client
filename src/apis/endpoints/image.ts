@@ -17,7 +17,7 @@ type Variables = {
     fileType: string
   }
   upload: {
-    file: any
+    file: File
     url: string
   }
 }
@@ -39,7 +39,7 @@ const image: API = {
       method: 'put',
       url: data.url,
       headers: {
-        // 'Content-Type': 'image/png',
+        'Content-Type': data.file.type,
       },
       data: data.file,
     })

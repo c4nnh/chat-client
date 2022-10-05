@@ -7,6 +7,7 @@ import {
   useUpdateUserMutation,
   useUploadImageMutation,
 } from '../../apis'
+import { useAuthStore } from '../../stores'
 
 type Props = {}
 
@@ -18,6 +19,7 @@ export const Profile: React.FC<Props> = () => {
     useUploadImageMutation()
   const { mutate: mutateUpdateUser, isLoading: isUpdatingUser } =
     useUpdateUserMutation()
+  const { me } = useAuthStore()
 
   const onUpload = async () => {
     const { name, type } = selectedFile!
@@ -42,11 +44,12 @@ export const Profile: React.FC<Props> = () => {
                   },
                   {
                     onSuccess: data => {
-                      console.log(data)
+                      me(data)
                       notification.success({
                         message: 'Success',
                         description: 'Your avatar is on air',
                       })
+                      setSelectedFile(undefined)
                     },
                   }
                 )
@@ -75,6 +78,7 @@ export const Profile: React.FC<Props> = () => {
       <Button
         onClick={onUpload}
         loading={isCreatingSignedUrl || isUploadingImage || isUpdatingUser}
+        disabled={!selectedFile}
       >
         {' '}
         Upload avatar
