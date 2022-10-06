@@ -1,5 +1,6 @@
 import { MutationFunction, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
+import { ImageFolder } from '../../models'
 import { request } from '../request'
 import { MutationOptions } from '../type'
 
@@ -15,6 +16,7 @@ type Variables = {
   createSignedUrl: {
     fileName: string
     fileType: string
+    folder: ImageFolder
   }
   upload: {
     file: File

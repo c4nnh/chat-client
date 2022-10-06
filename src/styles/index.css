@@ -33,3 +33,9 @@ code {
 ::-webkit-scrollbar {
   width: 10px;
 }
+
+.ant-modal-close-x {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

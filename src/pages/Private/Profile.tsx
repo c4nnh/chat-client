@@ -7,6 +7,7 @@ import {
   useUpdateUserMutation,
   useUploadImageMutation,
 } from '../../apis'
+import { ImageFolder } from '../../models'
 import { useAuthStore } from '../../stores'
 
 type Props = {}
@@ -27,6 +28,7 @@ export const Profile: React.FC<Props> = () => {
       {
         fileName: name,
         fileType: type,
+        folder: ImageFolder.AVATAR_FOLDER,
       },
       {
         onSuccess: async res => {

@@ -8,7 +8,11 @@ import { useGetMessagesInfiniteQuery } from '../../../../../apis'
 import { StyledSpin } from '../../../../../components'
 import { END_POINTS } from '../../../../../constants'
 import { SocketContext } from '../../../../../contexts'
-import { MessageGroup as MessageGroupModel, User } from '../../../../../models'
+import {
+  Message,
+  MessageGroup as MessageGroupModel,
+  User,
+} from '../../../../../models'
 import { useAuthStore, useSendingMessagesStore } from '../../../../../stores'
 import {
   addMessageToMessageGroups,
@@ -61,24 +65,49 @@ export const MessageList: React.FC<Props> = () => {
   useEffect(() => {
     socket.emit('onJoinConversation', { conversationId })
 
-    socket.on('onNewMessage', (msg: any) => {
+    socket.on('onNewMessage', (msg: Message) => {
       setNumOfNewMessagesOnSocket(pre => pre + 1)
       setMessageGroups(pre => addMessageToMessageGroups(msg, pre))
     })
 
-    socket.on('onUserTyping', (data: any) => {
+    socket.on('onUserTyping', (data: { user: User }) => {
       if (user?.id !== data.user.id) {
         setTypingUsers(pre => [data.user, ...pre])
       }
     })
 
-    socket.on('onUserStopTyping', (data: any) => {
+    socket.on('onUserStopTyping', (data: { userId: string }) => {
       setTypingUsers(pre => pre.filter(item => item.id !== data.userId))
+    })
+
+    socket.on('onUserUpdate', (data: User) => {
+      setMessageGroups(pre =>
+        pre.map(item => {
+          if (item.creator.id !== data.id) {
+            return item
+          }
+          return {
+            ...item,
+            messages: item.messages.map(msg => ({
+              ...msg,
+              creator: {
+                ...msg.creator,
+                ...data,
+              },
+            })),
+            creator: {
+              ...item.creator,
+              ...data,
+            },
+          }
+        })
+      )
     })
 
     return () => {
       socket.off('onNewMessage')
       socket.off('onUserTyping')
+      socket.off('onUserUpdate')
       socket.emit('onLeaveConversation', { conversationId })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

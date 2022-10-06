@@ -165,3 +165,10 @@ export type RoomDetail = {
   game: GameType
   members: RoomMember[]
 }
+
+// Image
+export enum ImageFolder {
+  AVATAR_FOLDER = 'avatars',
+  MESSAGE_FOLDER = 'messages',
+  CONVERSATION_FOLDER = 'conversations',
+}
