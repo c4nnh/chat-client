@@ -76,7 +76,12 @@ export const Profile: React.FC<Props> = () => {
 
   return (
     <Container>
-      <input type="file" name="file" onChange={changeHandler} />
+      <input
+        accept="image/*"
+        type="file"
+        name="file"
+        onChange={changeHandler}
+      />
       <Button
         onClick={onUpload}
         loading={isCreatingSignedUrl || isUploadingImage || isUpdatingUser}

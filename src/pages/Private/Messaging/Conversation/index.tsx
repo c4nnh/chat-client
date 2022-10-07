@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { Message } from './Message'
+import { Setting } from './Setting'
 
 type Props = {}
 
@@ -8,7 +9,7 @@ export const Channel: React.FC<Props> = () => {
   return (
     <Container>
       <Message />
-      {/* <Setting /> */}
+      <Setting />
     </Container>
   )
 }

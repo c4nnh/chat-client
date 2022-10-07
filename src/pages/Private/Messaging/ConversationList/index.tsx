@@ -78,8 +78,26 @@ export const ConversationList: React.FC<Props> = () => {
       }
     })
 
+    socket.on(
+      'onConversationInformationUpdate',
+      (conversation: ConversationModel) => {
+        setConversations(pre =>
+          pre.map(item => {
+            if (item.id === conversation.id) {
+              return {
+                ...item,
+                ...conversation,
+              }
+            }
+            return item
+          })
+        )
+      }
+    )
+
     return () => {
       socket.off('onConversationsUpdate')
+      socket.off('onConversationInformationUpdate')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, updateConversations])

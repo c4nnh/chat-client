@@ -118,6 +118,11 @@ export type CreateConversationDto = {
   content: string
 }
 
+export type UpdateConversationDto = {
+  name?: string
+  image?: string
+}
+
 export type GameType = 'BUNNY_JUMP'
 
 export enum RoomRole {

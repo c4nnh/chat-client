@@ -11,6 +11,7 @@ import {
   Conversation,
   ConversationParams,
   CreateConversationDto,
+  UpdateConversationDto,
 } from '../../models'
 import { request } from '../request'
 import { InfiniteQueryOptions, MutationOptions, QueryOptions } from '../type'
@@ -19,6 +20,7 @@ type Response = {
   get: Collection<Conversation>
   getOne: Omit<Conversation, 'lastMessage'>
   create: Conversation
+  update: Conversation
 }
 
 type QueryKeys = {
@@ -28,12 +30,14 @@ type QueryKeys = {
 
 type Variables = {
   create: CreateConversationDto
+  update: { id: string; dto: UpdateConversationDto }
 }
 
 type API = {
   get: QueryFunction<Response['get'], QueryKeys['get']>
   getOne: QueryFunction<Response['getOne'], QueryKeys['getOne']>
   create: MutationFunction<Response['create'], Variables['create']>
+  update: MutationFunction<Response['update'], Variables['update']>
 }
 
 const PREFIX = 'conversations'
@@ -43,6 +47,7 @@ const conversation: API = {
     request.get(PREFIX, { params: { ...params, pageParam } }),
   getOne: ({ queryKey: [, id] }) => request.get(`${PREFIX}/${id}`),
   create: data => request.post(PREFIX, data),
+  update: ({ id, dto }) => request.put(`${PREFIX}/${id}`, dto),
 }
 
 export const useGetConversationsInfiniteQuery = (
@@ -69,3 +74,7 @@ export const useGetConversationDetailQuery = (
 export const useCreateConversationMutation = (
   options?: MutationOptions<Response['create'], Variables['create']>
 ) => useMutation(['create'], conversation.create, options)
+
+export const useUpdateConversationMutation = (
+  options?: MutationOptions<Response['update'], Variables['update']>
+) => useMutation(['update'], conversation.update, options)
