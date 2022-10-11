@@ -116,7 +116,7 @@ export const RoomItem: React.FC<Props> = ({ room }) => {
 }
 
 const Container = styled(Card)`
-  ${tw`bg-gray-300 h-[180px] flex gap-1 border-none rounded-lg`}
+  ${tw`bg-gray-400 h-[180px] flex gap-1 border-none rounded-lg`}
 
   .ant-card-body {
     ${tw`!w-full p-2 flex flex-col h-full`}
@@ -127,9 +127,13 @@ const Container = styled(Card)`
   }
 
   :hover {
+    ${tw`bg-gray-300`}
+    transform: scale(1.05);
+
     .room-info {
       ${tw`opacity-30`}
     }
+
     .join-button {
       ${tw`flex items-center justify-center`}
     }

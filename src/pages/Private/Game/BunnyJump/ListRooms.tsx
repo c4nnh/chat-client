@@ -6,7 +6,9 @@ import { useGetRoomsInfiniteQuery } from '../../../../apis'
 import { StyledSpin } from '../../../../components'
 import { SocketContext } from '../../../../contexts'
 import { useScreen } from '../../../../hooks'
-import { Room } from '../../../../models'
+import { GameType, Room } from '../../../../models'
+import { CreateCard } from '../components'
+import { CreateRoom } from './CreateRoom'
 import { RoomItem } from './RoomItem'
 
 type Props = {}
@@ -16,10 +18,11 @@ export const ListRoom: React.FC<Props> = () => {
   const { socket } = useContext(SocketContext)
   const [rooms, setRooms] = useState<Room[]>([])
   const [numOfNewRoomsOnSocket, setNumOfNewRoomsOnSocket] = useState(0)
+  const [openCreateRoom, setOpenCreateRoom] = useState(false)
 
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     useGetRoomsInfiniteQuery(
-      { gameType: 'BUNNY_JUMP', limit: 80 },
+      { gameType: GameType.BUNNY_JUMP, limit: 80 },
       {
         getNextPageParam: (prevPage, pages) => {
           if (pages.length < prevPage.pagination.totalPage) {
@@ -110,6 +113,7 @@ export const ListRoom: React.FC<Props> = () => {
           rowGap: isMobileScreen ? '20px' : '40px',
         }}
       >
+        {!isFetching && <CreateCard onClick={() => setOpenCreateRoom(true)} />}
         {isFetching
           ? Array.from(Array(25).keys()).map(item => (
               <StyledSkeletonButton key={item} />
@@ -117,6 +121,10 @@ export const ListRoom: React.FC<Props> = () => {
           : rooms.map(item => <RoomItem key={item.id} room={item} />)}
       </Body>
       {isFetchingNextPage && <StyledSpin />}
+      <CreateRoom
+        open={openCreateRoom}
+        onClose={() => setOpenCreateRoom(false)}
+      />
     </Container>
   )
 }

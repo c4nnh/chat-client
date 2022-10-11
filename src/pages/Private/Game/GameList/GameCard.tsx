@@ -15,10 +15,11 @@ export const GameCard: React.FC<Props> = ({ game }) => {
 }
 
 const Container = styled(Card)`
-  ${tw`bg-gray-300 h-[180px] w-[180px] border-none`}
+  ${tw`bg-gray-400 h-[180px] w-[180px] border-none`}
 
   :hover {
-    transform: scale(1.25);
+    ${tw`bg-gray-300`}
+    transform: scale(1.05);
   }
   transition: 0.5s;
 `

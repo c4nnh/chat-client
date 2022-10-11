@@ -13,6 +13,7 @@ import {
   Room,
   RoomDetail,
   RoomsParams,
+  GameType,
 } from '../../models'
 import { request } from '../request'
 import { InfiniteQueryOptions, MutationOptions, QueryOptions } from '../type'
@@ -20,7 +21,7 @@ import { InfiniteQueryOptions, MutationOptions, QueryOptions } from '../type'
 type Response = {
   get: Collection<Room>
   getOne: RoomDetail
-  create: RoomDetail
+  create: string
   join: RoomDetail
   kick: boolean
   updateReadyStatus: boolean
@@ -60,7 +61,7 @@ const room: API = {
   get: ({ queryKey: [, params], pageParam }) =>
     request.get(PREFIX, { params: { ...params, pageParam } }),
   getOne: ({ queryKey: [, id] }) => request.get(`${PREFIX}/${id}`),
-  create: dto => request.post(PREFIX, dto),
+  create: dto => request.post(PREFIX, { ...dto, game: GameType.BUNNY_JUMP }),
   join: ({ roomId, dto }) => request.put(`${JOIN_ROOM_PREFIX}/${roomId}`, dto),
   kick: dto => request.put(KICK_MEMBER_PREFIX, dto),
   updateReadyStatus: dto => request.put(UPDATE_READY_STATUS, dto),

@@ -123,7 +123,9 @@ export type UpdateConversationDto = {
   image?: string
 }
 
-export type GameType = 'BUNNY_JUMP'
+export enum GameType {
+  BUNNY_JUMP = 'BUNNY_JUMP',
+}
 
 export enum RoomRole {
   CREATOR = 'CREATOR',
