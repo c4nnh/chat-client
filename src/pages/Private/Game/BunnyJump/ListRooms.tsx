@@ -3,11 +3,10 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { useGetRoomsInfiniteQuery } from '../../../../apis'
-import { StyledSpin } from '../../../../components'
+import { StyledSpin, CreateCard } from '../../../../components'
 import { SocketContext } from '../../../../contexts'
 import { useScreen } from '../../../../hooks'
 import { GameType, Room } from '../../../../models'
-import { CreateCard } from '../components'
 import { CreateRoom } from './CreateRoom'
 import { RoomItem } from './RoomItem'
 
@@ -22,7 +21,7 @@ export const ListRoom: React.FC<Props> = () => {
 
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     useGetRoomsInfiniteQuery(
-      { gameType: GameType.BUNNY_JUMP, limit: 80 },
+      { game: GameType.BUNNY_JUMP, limit: 80 },
       {
         getNextPageParam: (prevPage, pages) => {
           if (pages.length < prevPage.pagination.totalPage) {
@@ -72,8 +71,10 @@ export const ListRoom: React.FC<Props> = () => {
     socket.emit('joinWaitingRoom')
 
     socket.on('onNewRoom', (room: Room) => {
-      setRooms(pre => [room, ...pre])
-      setNumOfNewRoomsOnSocket(pre => pre + 1)
+      if (room.game === GameType.BUNNY_JUMP) {
+        setRooms(pre => [room, ...pre])
+        setNumOfNewRoomsOnSocket(pre => pre + 1)
+      }
     })
 
     socket.on('onDeleteRoom', (data: { roomId: string }) => {

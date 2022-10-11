@@ -18,13 +18,19 @@ export const CreateRoom: React.FC<Props> = ({ open, onClose }) => {
   const { mutate, isLoading: isCreatingRoom } = useCreateRoomMutation()
 
   const createRoom = handleSubmit(data => {
-    mutate(data, {
-      onSuccess: roomId => {
-        reset()
-        onClose()
-        navigate(roomId)
+    mutate(
+      {
+        ...data,
+        max: data.max || undefined,
       },
-    })
+      {
+        onSuccess: roomId => {
+          reset()
+          onClose()
+          navigate(roomId)
+        },
+      }
+    )
   })
 
   return (

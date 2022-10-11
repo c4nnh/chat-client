@@ -1,10 +1,14 @@
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { useGetRoomDetailQuery } from '../../../../apis'
-import { END_POINTS } from '../../../../constants'
-import { SocketContext } from '../../../../contexts'
-import { RoomMember, RoomRole } from '../../../../models'
+import tw from 'twin.macro'
+import { useGetRoomDetailQuery } from '../../../../../apis'
+import { Loading } from '../../../../../components'
+import { END_POINTS } from '../../../../../constants'
+import { SocketContext } from '../../../../../contexts'
+import { RoomMember, RoomRole } from '../../../../../models'
+import { Footer } from './Footer'
+import { Members } from './Members'
 
 export const BunnyJumpDetail: React.FC = () => {
   const navigate = useNavigate()
@@ -24,7 +28,7 @@ export const BunnyJumpDetail: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      socket.emit('joinRoom', { rommId: id })
+      socket.emit('joinRoom', { roomId: id })
 
       socket.on('onUserJoinRoom', (newMember: RoomMember) => {
         setMembers(pre => [...pre, newMember])
@@ -59,18 +63,18 @@ export const BunnyJumpDetail: React.FC = () => {
   }, [socket, id])
 
   if (isFetching) {
-    return <span>Loading</span>
+    return <Loading />
   }
 
   return (
     <Container>
-      {members.map(item => (
-        <span key={item.id}>
-          {item.name}:{item.role}
-        </span>
-      ))}
+      <Members members={members} />
+      <div className="flex-1 w-full bg-gray-400">body</div>
+      <Footer members={members} />
     </Container>
   )
 }
 
-const Container = styled.div``
+const Container = styled.div`
+  ${tw`h-full flex flex-col gap-4 p-4`}
+`

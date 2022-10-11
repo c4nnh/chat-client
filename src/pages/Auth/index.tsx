@@ -1,5 +1,7 @@
+import { useContext, useEffect } from 'react'
 import { Navigate, Routes, Route } from 'react-router-dom'
 import { END_POINTS } from '../../constants'
+import { SocketContext } from '../../contexts'
 import { AuthLayout } from '../../layouts'
 import { useAuthStore } from '../../stores'
 import { Login } from './Login'
@@ -7,6 +9,12 @@ import { Register } from './Register'
 
 export const AuthPages: React.FC = () => {
   const { user } = useAuthStore()
+
+  const { socket } = useContext(SocketContext)
+
+  useEffect(() => {
+    socket.disconnect()
+  }, [socket])
 
   if (user) {
     return <Navigate to={`/${END_POINTS.PRIVATE.MASTER}`} replace />

@@ -140,7 +140,7 @@ export type RoomMember = Pick<User, 'id' | 'name' | 'image'> & {
 type MaxMemberInRoom = 2 | 3 | 4
 
 export type RoomsParams = PaginationParams & {
-  gameType: GameType
+  game: GameType
   name?: string
 }
 

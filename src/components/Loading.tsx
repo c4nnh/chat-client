@@ -4,7 +4,7 @@ import { StyledSpin } from './Spin'
 
 type Props = {}
 
-export const AppLoading: React.FC<Props> = () => {
+export const Loading: React.FC<Props> = () => {
   return (
     <Container>
       <StyledSpin />
