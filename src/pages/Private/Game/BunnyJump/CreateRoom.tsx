@@ -73,7 +73,7 @@ export const CreateRoom: React.FC<Props> = ({ open, onClose }) => {
             inputProps={{
               type: 'number',
               readOnly: isCreatingRoom,
-              placeholder: 'Enter number of member',
+              placeholder: 'Enter number of member (from 2 to 4)',
               allowClear: false,
               min: 2,
               max: 4,

@@ -1,10 +1,7 @@
-import { useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { io } from 'socket.io-client'
 import { useMeQuery } from './apis'
 import { Loading } from './components'
 import { END_POINTS } from './constants'
-import { SocketContext } from './contexts'
 import { AuthPages, PrivatePages } from './pages'
 import { useAuthStore } from './stores'
 import { getToken } from './utils'
@@ -17,37 +14,21 @@ export const App: React.FC = () => {
     onSuccess: me,
   })
 
-  const socket = io(process.env.REACT_APP_WEBSOCKET_URL!, {
-    extraHeaders: {
-      authorization: `Bearer ${getToken().accessToken}`,
-    },
-    reconnectionAttempts: 3,
-    autoConnect: false,
-  })
-
-  useEffect(() => {
-    return () => {
-      socket.disconnect()
-    }
-  }, [socket])
-
   if (isFetching) {
     return <Loading />
   }
 
   return (
-    <SocketContext.Provider value={{ socket }}>
-      <Routes>
-        <Route path={`${END_POINTS.AUTH.MASTER}/*`} element={<AuthPages />} />
-        <Route
-          path={`${END_POINTS.PRIVATE.MASTER}/*`}
-          element={<PrivatePages />}
-        />
-        <Route
-          path="/*"
-          element={<Navigate to={END_POINTS.PRIVATE.MASTER} replace />}
-        />
-      </Routes>
-    </SocketContext.Provider>
+    <Routes>
+      <Route path={`${END_POINTS.AUTH.MASTER}/*`} element={<AuthPages />} />
+      <Route
+        path={`${END_POINTS.PRIVATE.MASTER}/*`}
+        element={<PrivatePages />}
+      />
+      <Route
+        path="/*"
+        element={<Navigate to={END_POINTS.PRIVATE.MASTER} replace />}
+      />
+    </Routes>
   )
 }
