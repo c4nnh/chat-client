@@ -4,7 +4,7 @@ import {
   UserOutlined,
   LogoutOutlined,
 } from '@ant-design/icons'
-import { Avatar } from 'antd'
+import { Avatar, Modal } from 'antd'
 import classnames from 'classnames'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -45,8 +45,16 @@ export const Sidebar: React.FC = () => {
     {
       icon: <LogoutOutlined />,
       onClick: () => {
-        logout()
-        navigate(END_POINTS.AUTH.MASTER)
+        Modal.confirm({
+          title: 'Do you want to logout?',
+          // icon: <WarningOutlined />,
+          okText: 'Yes',
+          cancelText: 'No',
+          onOk: () => {
+            logout()
+            navigate(END_POINTS.AUTH.MASTER)
+          },
+        })
       },
     },
   ]

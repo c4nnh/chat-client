@@ -49,7 +49,7 @@ export const EditName: React.FC<Props> = ({ open, onClose }) => {
       closable={false}
       maskClosable={false}
       destroyOnClose
-      okText="Send"
+      okText="Save"
       confirmLoading={isLoading}
       onOk={onSave}
       okButtonProps={{

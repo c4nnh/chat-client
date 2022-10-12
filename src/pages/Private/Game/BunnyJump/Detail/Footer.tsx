@@ -1,6 +1,10 @@
-import { CheckOutlined } from '@ant-design/icons'
-import { Button } from 'antd'
-import { useParams } from 'react-router-dom'
+import {
+  ArrowLeftOutlined,
+  CheckOutlined,
+  WarningOutlined,
+} from '@ant-design/icons'
+import { Button, Modal } from 'antd'
+import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { useUpdateReadyStatusMutation } from '../../../../../apis'
@@ -12,6 +16,7 @@ type Props = {
 }
 
 export const Footer: React.FC<Props> = ({ members }) => {
+  const navigate = useNavigate()
   const { user } = useAuthStore()
   const { id } = useParams()
   const { mutate: mutateReady, isLoading: isUpdatingReadyStatus } =
@@ -38,40 +43,69 @@ export const Footer: React.FC<Props> = ({ members }) => {
     })
   }
 
+  const leave = () => {
+    Modal.confirm({
+      title: 'Do you want to leave this room?',
+      icon: <WarningOutlined />,
+      okText: 'Yes',
+      cancelText: 'No',
+      onOk: () => navigate(-1),
+    })
+  }
+
   return (
     <Container>
-      {isCreator && (
-        <Button size="large" type="primary" shape="round" disabled={canStart}>
-          Start game
+      <div className="flex-1">
+        <Button
+          size="large"
+          danger
+          type="primary"
+          shape="round"
+          icon={<ArrowLeftOutlined />}
+          onClick={leave}
+        >
+          Leave
         </Button>
-      )}
-      {!isCreator && (
-        <>
-          {isReady ? (
-            <Button
-              size="large"
-              shape="round"
-              type="primary"
-              style={{ background: 'yellowgreen', borderColor: 'yellowgreen' }}
-              icon={<CheckOutlined />}
-              onClick={() => updateReadyStatus(false)}
-              loading={isUpdatingReadyStatus}
-            >
-              Unready
-            </Button>
-          ) : (
-            <Button
-              size="large"
-              type="primary"
-              shape="round"
-              onClick={() => updateReadyStatus(true)}
-              loading={isUpdatingReadyStatus}
-            >
-              Ready
-            </Button>
-          )}
-        </>
-      )}
+      </div>
+      <>
+        {' '}
+        {isCreator && (
+          <Button size="large" type="primary" shape="round" disabled={canStart}>
+            Start game
+          </Button>
+        )}
+        {!isCreator && (
+          <>
+            {isReady ? (
+              <Button
+                size="large"
+                shape="round"
+                type="primary"
+                style={{
+                  background: 'yellowgreen',
+                  borderColor: 'yellowgreen',
+                }}
+                icon={<CheckOutlined />}
+                onClick={() => updateReadyStatus(false)}
+                loading={isUpdatingReadyStatus}
+              >
+                Unready
+              </Button>
+            ) : (
+              <Button
+                size="large"
+                type="primary"
+                shape="round"
+                onClick={() => updateReadyStatus(true)}
+                loading={isUpdatingReadyStatus}
+              >
+                Ready
+              </Button>
+            )}
+          </>
+        )}
+      </>
+      <div className="flex-1"></div>
     </Container>
   )
 }

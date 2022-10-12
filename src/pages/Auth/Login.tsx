@@ -51,7 +51,7 @@ export const Login: React.FC = () => {
               navigate(`/${END_POINTS.AUTH.MASTER}/${END_POINTS.AUTH.REGISTER}`)
             }
           >
-            Doesn't have account?
+            Don't have account?
           </span>
           <Button type="primary" htmlType="submit" loading={isLoading}>
             Login

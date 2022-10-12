@@ -21,6 +21,7 @@ const games: GameModel[] = [
   {
     name: 'Bunny jump',
     path: GameType.BUNNY_JUMP,
+    image: '/assets/image/game/bunnyJump.png',
   },
 ]
 
