@@ -13,8 +13,6 @@ export const AuthPages: React.FC = () => {
   const { socket } = useContext(SocketContext)
 
   useEffect(() => {
-    console.log('here login')
-
     socket.disconnect()
   }, [socket])
 

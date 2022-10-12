@@ -27,8 +27,6 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     return () => {
-      console.log('here')
-
       socket.disconnect()
     }
   }, [socket])
