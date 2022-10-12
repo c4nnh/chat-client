@@ -26,6 +26,23 @@ export const BunnyJumpDetail: React.FC = () => {
       ),
   })
 
+  const updateUserReadyStatus = (userId: string, isReady: boolean) => {
+    setMembers(pre => {
+      const index = pre.findIndex(item => item.id === userId)
+      if (index > -1) {
+        return [
+          ...pre.slice(0, index),
+          {
+            ...pre[index],
+            isReady,
+          },
+          ...pre.slice(index + 1),
+        ]
+      }
+      return pre
+    })
+  }
+
   useEffect(() => {
     if (id) {
       socket.emit('joinRoom', { roomId: id })
@@ -52,12 +69,24 @@ export const BunnyJumpDetail: React.FC = () => {
           })
         }
       )
+
+      socket.on('onUserReady', (data: { userId: string }) => {
+        const { userId } = data
+        updateUserReadyStatus(userId, true)
+      })
+
+      socket.on('onUserUnready', (data: { userId: string }) => {
+        const { userId } = data
+        updateUserReadyStatus(userId, false)
+      })
     }
 
     return () => {
       socket.off('joinRoom')
       socket.off('onUserJoinRoom')
       socket.off('onUserLeaveRoom')
+      socket.off('onUserReady')
+      socket.off('onUserUnready')
       socket.emit('leaveRoom', { roomId: id })
     }
   }, [socket, id])

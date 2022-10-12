@@ -37,7 +37,7 @@ type Variables = {
   join: { roomId: string; dto?: JoinRoomDto }
   kick: KickMemberDto
   ready: { roomId: string }
-  updateReadyStatus: { isReady: false }
+  updateReadyStatus: { roomId: string; dto: { isReady: boolean } }
 }
 
 type API = {
@@ -64,7 +64,8 @@ const room: API = {
   create: dto => request.post(PREFIX, { ...dto, game: GameType.BUNNY_JUMP }),
   join: ({ roomId, dto }) => request.put(`${JOIN_ROOM_PREFIX}/${roomId}`, dto),
   kick: dto => request.put(KICK_MEMBER_PREFIX, dto),
-  updateReadyStatus: dto => request.put(UPDATE_READY_STATUS, dto),
+  updateReadyStatus: ({ roomId, dto }) =>
+    request.put(`${UPDATE_READY_STATUS}/${roomId}`, dto),
 }
 
 export const useGetRoomsInfiniteQuery = (

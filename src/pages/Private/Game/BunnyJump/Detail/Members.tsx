@@ -3,12 +3,15 @@ import { Avatar, Card, Tooltip, Typography } from 'antd'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 import { RoomMember, RoomRole } from '../../../../../models'
+import { useAuthStore } from '../../../../../stores'
 
 type Props = {
   members: RoomMember[]
 }
 
 export const Members: React.FC<Props> = ({ members }) => {
+  const { user } = useAuthStore()
+
   return (
     <Container>
       {members
@@ -25,9 +28,12 @@ export const Members: React.FC<Props> = ({ members }) => {
                 )}
               </Header>
               <Avatar src={member.image} />
-
-              <Typography.Text style={{ width: 100 }} ellipsis>
-                {member.name}
+              <Typography.Text className="w-[100px] text-xs pt-2" ellipsis>
+                {user?.id === member.id ? (
+                  <span className="text-gray-200">You</span>
+                ) : (
+                  member.name
+                )}
               </Typography.Text>
             </MemberCard>
           </Tooltip>
@@ -41,10 +47,10 @@ const Container = styled.div`
 `
 
 const MemberCard = styled(Card)`
-  ${tw`bg-gray-500 w-[100px] h-[120px] flex gap-1 border-none rounded-lg text-center`}
+  ${tw`bg-gray-500 w-[100px] h-[120px] flex border-none rounded-lg text-center`}
 
   .ant-card-body {
-    ${tw`!w-full p-2 flex flex-col items-center h-full`}
+    ${tw`!w-full p-1 flex flex-col items-center h-full`}
   }
 `
 

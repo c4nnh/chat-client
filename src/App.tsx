@@ -27,10 +27,11 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     return () => {
+      console.log('here')
+
       socket.disconnect()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [socket])
 
   if (isFetching) {
     return <Loading />

@@ -59,7 +59,7 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   response => response.data,
   async (error: AxiosError<ErrorResponse>) => {
-    if (error.response?.data.error === 'EXPIRED_TOKEN') {
+    if (error.response?.status === 401) {
       const isRefreshSuccess = await refreshToken()
       if (isRefreshSuccess) {
         const {

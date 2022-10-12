@@ -87,6 +87,7 @@ export const RoomItem: React.FC<Props> = ({ room }) => {
         onCancel={() => {
           setOpenJoinModal(false)
         }}
+        okText="Join"
         onOk={handleJoinRoom}
         confirmLoading={isLoading}
         okButtonProps={{

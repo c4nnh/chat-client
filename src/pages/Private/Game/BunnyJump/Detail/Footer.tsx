@@ -1,7 +1,9 @@
 import { CheckOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
+import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
+import { useUpdateReadyStatusMutation } from '../../../../../apis'
 import { RoomMember, RoomRole } from '../../../../../models'
 import { useAuthStore } from '../../../../../stores'
 
@@ -11,8 +13,11 @@ type Props = {
 
 export const Footer: React.FC<Props> = ({ members }) => {
   const { user } = useAuthStore()
+  const { id } = useParams()
+  const { mutate: mutateReady, isLoading: isUpdatingReadyStatus } =
+    useUpdateReadyStatusMutation()
 
-  const startable =
+  const canStart =
     members.filter(item => item.role !== RoomRole.CREATOR && !item.isReady)
       .length ===
     members.length - 1
@@ -24,10 +29,19 @@ export const Footer: React.FC<Props> = ({ members }) => {
   const isReady = !!members.filter(item => item.id === user?.id && item.isReady)
     .length
 
+  const updateReadyStatus = (isReady: boolean) => {
+    mutateReady({
+      roomId: id!,
+      dto: {
+        isReady,
+      },
+    })
+  }
+
   return (
     <Container>
       {isCreator && (
-        <Button size="large" type="primary" shape="round" disabled={startable}>
+        <Button size="large" type="primary" shape="round" disabled={canStart}>
           Start game
         </Button>
       )}
@@ -40,11 +54,19 @@ export const Footer: React.FC<Props> = ({ members }) => {
               type="primary"
               style={{ background: 'yellowgreen', borderColor: 'yellowgreen' }}
               icon={<CheckOutlined />}
+              onClick={() => updateReadyStatus(false)}
+              loading={isUpdatingReadyStatus}
             >
               Unready
             </Button>
           ) : (
-            <Button size="large" type="primary" shape="round">
+            <Button
+              size="large"
+              type="primary"
+              shape="round"
+              onClick={() => updateReadyStatus(true)}
+              loading={isUpdatingReadyStatus}
+            >
               Ready
             </Button>
           )}
